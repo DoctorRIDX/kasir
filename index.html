@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Scanner</title>
 
 <style>
@@ -12,24 +13,20 @@
     padding: 0;
 }
 
-html,
 body {
-    width: 100%;
-    min-height: 100%;
     background: #ffffff;
     color: #111111;
     font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    padding: 16px;
+    padding: 12px;
 }
 
 #app {
     width: 100%;
     max-width: 520px;
-    margin: 0 auto;
+    margin: auto;
 }
+
+/* CAMERA */
 
 #reader {
     width: 100%;
@@ -45,14 +42,29 @@ body {
     object-fit: cover;
 }
 
-.total {
+/* LOADING */
+
+#loading {
+    display: none;
+    width: 100%;
+    padding: 16px 0;
+    text-align: center;
+    border-bottom: 1px solid #cccccc;
+    font-size: 15px;
+}
+
+/* TOTAL */
+
+#total {
     width: 100%;
     padding: 18px 0;
     border-bottom: 1px solid #cccccc;
+    text-align: right;
     font-size: 34px;
     font-weight: 700;
-    text-align: right;
 }
+
+/* LIST */
 
 #list {
     width: 100%;
@@ -62,15 +74,19 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+
     min-height: 48px;
+
     padding: 10px 0;
+
     border-bottom: 1px solid #dddddd;
+
     font-size: 16px;
 }
 
 .item-code {
     color: #555555;
+
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -81,39 +97,31 @@ body {
     font-weight: 600;
 }
 
-.bottom {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 14px;
-}
-
-button {
-    border: 1px solid #111111;
-    background: #111111;
-    color: #ffffff;
-    padding: 10px 18px;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-button:active {
-    background: #333333;
-}
-
 .empty {
-    padding: 20px 0;
+    padding: 18px 0;
     color: #777777;
     text-align: center;
 }
 
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
+/* RESET */
 
-    .total {
-        font-size: 30px;
-    }
+#reset {
+    margin-top: 14px;
+
+    border: 1px solid #111111;
+
+    background: #111111;
+    color: #ffffff;
+
+    padding: 10px 18px;
+
+    font-size: 15px;
+
+    cursor: pointer;
+}
+
+#reset:active {
+    background: #333333;
 }
 </style>
 </head>
@@ -124,193 +132,474 @@ button:active {
 
     <div id="reader"></div>
 
-    <div class="total" id="total">
+    <div id="loading">
+        Memproses...
+    </div>
+
+    <div id="total">
         Rp0
     </div>
 
     <div id="list">
-        <div class="empty" id="empty">
+        <div class="empty">
             Belum ada
         </div>
     </div>
 
-    <div class="bottom">
-        <button id="reset">Reset</button>
-    </div>
+    <button id="reset">
+        Reset
+    </button>
 
 </div>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
+
+/*
+==================================================
+DATABASE PRODUK
+==================================================
+Ganti / tambahkan barcode dan harga di sini.
+*/
+
 const PRODUCTS = {
+
     "8991002100011": 5000,
     "8991002100028": 7500,
     "8991002100035": 10000,
     "8991002100042": 12500,
     "8991002100059": 15000,
     "8991002100066": 20000
+
 };
+
+
+/*
+==================================================
+STATE
+==================================================
+*/
 
 let total = 0;
 let items = [];
-let lastCode = "";
-let lastScanTime = 0;
+
+let processing = false;
+let lastProcessedCode = "";
+let lastProcessedTime = 0;
+
+
+/*
+==================================================
+ELEMENT
+==================================================
+*/
 
 const totalElement = document.getElementById("total");
 const listElement = document.getElementById("list");
-const emptyElement = document.getElementById("empty");
+const loadingElement = document.getElementById("loading");
 const resetButton = document.getElementById("reset");
 
-function formatRupiah(number) {
-    return "Rp" + number.toLocaleString("id-ID");
+
+/*
+==================================================
+FORMAT RUPIAH
+==================================================
+*/
+
+function formatRupiah(value) {
+
+    return "Rp" + value.toLocaleString("id-ID");
+
 }
+
+
+/*
+==================================================
+UPDATE TOTAL
+==================================================
+*/
 
 function updateTotal() {
+
     totalElement.textContent = formatRupiah(total);
+
 }
 
+
+/*
+==================================================
+RENDER DAFTAR
+==================================================
+*/
+
 function renderList() {
+
     listElement.innerHTML = "";
 
     if (items.length === 0) {
-        listElement.appendChild(emptyElement);
+
+        const empty = document.createElement("div");
+
+        empty.className = "empty";
+        empty.textContent = "Belum ada";
+
+        listElement.appendChild(empty);
+
         return;
+
     }
 
-    items.forEach((item) => {
+    items.forEach(function(item) {
+
         const row = document.createElement("div");
+
         row.className = "item";
 
+
         const code = document.createElement("div");
+
         code.className = "item-code";
+
         code.textContent = item.code;
 
+
         const price = document.createElement("div");
+
         price.className = "item-price";
+
         price.textContent = formatRupiah(item.price);
+
 
         row.appendChild(code);
         row.appendChild(price);
 
         listElement.appendChild(row);
+
     });
+
 }
 
+
+/*
+==================================================
+BEEP
+==================================================
+*/
+
 function beep() {
+
     try {
+
         const AudioContext =
-            window.AudioContext || window.webkitAudioContext;
+            window.AudioContext ||
+            window.webkitAudioContext;
 
         const audioContext = new AudioContext();
-        const oscillator = audioContext.createOscillator();
-        const gain = audioContext.createGain();
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
 
         oscillator.type = "square";
-        oscillator.frequency.value = 1200;
 
-        gain.gain.setValueAtTime(0.08, audioContext.currentTime);
+        oscillator.frequency.value = 1000;
+
+
+        gain.gain.setValueAtTime(
+            0.08,
+            audioContext.currentTime
+        );
+
+
         gain.gain.exponentialRampToValueAtTime(
             0.001,
             audioContext.currentTime + 0.12
         );
 
+
         oscillator.connect(gain);
+
         gain.connect(audioContext.destination);
 
+
         oscillator.start();
-        oscillator.stop(audioContext.currentTime + 0.12);
+
+        oscillator.stop(
+            audioContext.currentTime + 0.12
+        );
+
     } catch (error) {
-        console.warn("Audio tidak tersedia:", error);
+
+        console.log("Audio tidak tersedia.");
+
     }
+
 }
 
-function addProduct(code) {
-    const now = Date.now();
 
-    // Mencegah satu barcode terbaca berkali-kali
-    // dalam waktu yang sangat singkat.
-    if (
-        code === lastCode &&
-        now - lastScanTime < 1200
-    ) {
+/*
+==================================================
+PROSES BARCODE
+==================================================
+*/
+
+async function processBarcode(code) {
+
+    code = code.trim();
+
+
+    /*
+    Jangan proses kalau sedang memproses barcode lain.
+    */
+
+    if (processing) {
         return;
     }
 
-    lastCode = code;
-    lastScanTime = now;
+
+    /*
+    Jangan membaca barcode yang sama
+    berulang kali dalam waktu singkat.
+    */
+
+    const now = Date.now();
+
+    if (
+        code === lastProcessedCode &&
+        now - lastProcessedTime < 1500
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+    Cari harga.
+    */
 
     const price = PRODUCTS[code];
 
-    // Hanya barcode yang terdaftar yang dihitung.
+
+    /*
+    Kalau barcode tidak ada di database,
+    abaikan.
+    */
+
     if (price === undefined) {
+
         return;
+
     }
+
+
+    /*
+    KUNCI SCANNER
+    */
+
+    processing = true;
+
+
+    /*
+    BEEP LANGSUNG
+    */
 
     beep();
 
-    total += price;
 
-    items.push({
-        code: code,
-        price: price
+    /*
+    Tampilkan loading.
+    */
+
+    loadingElement.style.display = "block";
+
+
+    /*
+    Tunggu 1 detik.
+    */
+
+    await new Promise(function(resolve) {
+
+        setTimeout(resolve, 1000);
+
     });
 
+
+    /*
+    Masukkan produk.
+    */
+
+    total += price;
+
+
+    items.push({
+
+        code: code,
+
+        price: price
+
+    });
+
+
+    /*
+    Simpan barcode terakhir.
+    */
+
+    lastProcessedCode = code;
+
+    lastProcessedTime = Date.now();
+
+
+    /*
+    Update tampilan.
+    */
+
     updateTotal();
+
     renderList();
+
+
+    /*
+    Hilangkan loading.
+    */
+
+    loadingElement.style.display = "none";
+
+
+    /*
+    Buka scanner lagi.
+    */
+
+    processing = false;
+
 }
+
+
+/*
+==================================================
+SCANNER
+==================================================
+*/
 
 const scanner = new Html5Qrcode("reader");
 
+
 function onScanSuccess(decodedText) {
-    addProduct(decodedText.trim());
+
+    processBarcode(decodedText);
+
 }
 
-function onScanFailure() {
-    // Sengaja kosong.
-    // Scanner akan terus mencoba membaca frame kamera.
+
+function onScanFailure(error) {
+
+    /*
+    Kosong.
+
+    Scanner akan terus mencoba membaca kamera.
+    */
+
 }
+
+
+/*
+==================================================
+START CAMERA
+==================================================
+*/
 
 scanner.start(
+
     {
-        facingMode: {
-            exact: "environment"
-        }
+        facingMode: "environment"
     },
+
     {
         fps: 10,
+
         qrbox: {
             width: 280,
             height: 160
         },
+
         formatsToSupport: [
+
             Html5QrcodeSupportedFormats.EAN_13,
+
             Html5QrcodeSupportedFormats.EAN_8,
+
             Html5QrcodeSupportedFormats.UPC_A,
+
             Html5QrcodeSupportedFormats.UPC_E,
+
             Html5QrcodeSupportedFormats.CODE_128,
+
             Html5QrcodeSupportedFormats.CODE_39,
+
             Html5QrcodeSupportedFormats.ITF
+
         ]
+
     },
+
     onScanSuccess,
+
     onScanFailure
-).catch((error) => {
-    console.error("Kamera gagal dibuka:", error);
+
+).catch(function(error) {
+
+    console.error(
+        "Kamera tidak dapat digunakan:",
+        error
+    );
+
 });
 
-resetButton.addEventListener("click", () => {
-    total = 0;
-    items = [];
-    lastCode = "";
-    lastScanTime = 0;
 
-    updateTotal();
-    renderList();
-});
+/*
+==================================================
+RESET
+==================================================
+*/
+
+resetButton.addEventListener(
+    "click",
+    function() {
+
+        total = 0;
+
+        items = [];
+
+        lastProcessedCode = "";
+
+        lastProcessedTime = 0;
+
+        processing = false;
+
+        loadingElement.style.display = "none";
+
+        updateTotal();
+
+        renderList();
+
+    }
+);
+
+
+/*
+==================================================
+INITIAL
+==================================================
+*/
 
 updateTotal();
+
 renderList();
+
 </script>
 
 </body>
