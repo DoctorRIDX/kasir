@@ -4,153 +4,337 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Scanner</title>
+<title>C-COIS</title>
 
 <style>
 * {
     box-sizing: border-box;
+}
+
+html,
+body {
     margin: 0;
     padding: 0;
+    background: #f4f4f4;
+    color: #111;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
-    background: #ffffff;
-    color: #111111;
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 12px;
+    padding: 20px;
 }
 
-#app {
+.app {
     width: 100%;
-    max-width: 520px;
+    max-width: 900px;
     margin: auto;
 }
 
-/* CAMERA */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #bbb;
+    margin-bottom: 20px;
+}
+
+.tab {
+    border: 0;
+    background: transparent;
+    color: #666;
+    padding: 12px 18px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.tab.active {
+    color: #111;
+    border-bottom: 2px solid #111;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+textarea,
+input {
+    width: 100%;
+    border: 1px solid #aaa;
+    background: #fff;
+    color: #111;
+    padding: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    outline: none;
+}
+
+textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+textarea:focus,
+input:focus {
+    border-color: #111;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    color: #555;
+}
+
+.field {
+    margin-bottom: 14px;
+}
+
+button {
+    border: 1px solid #111;
+    background: #111;
+    color: #fff;
+    padding: 11px 16px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+button.secondary {
+    background: #fff;
+    color: #111;
+}
+
+button:active {
+    background: #333;
+}
+
+.output {
+    margin-top: 18px;
+    border: 1px solid #aaa;
+    background: #fff;
+}
+
+.output-head {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
+    color: #666;
+}
+
+.output-body {
+    padding: 14px;
+    word-break: break-all;
+    font-family: monospace;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
 
 #reader {
     width: 100%;
-    aspect-ratio: 4 / 3;
-    background: #eeeeee;
-    border: 1px solid #cccccc;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #aaa;
+    background: #ddd;
     overflow: hidden;
 }
 
 #reader video {
     width: 100% !important;
-    height: 100% !important;
-    object-fit: cover;
 }
 
-/* LOADING */
+.scan-result {
+    margin-top: 16px;
+    border: 1px solid #aaa;
+    background: #fff;
+    padding: 14px;
+}
 
-#loading {
-    display: none;
-    width: 100%;
-    padding: 16px 0;
-    text-align: center;
-    border-bottom: 1px solid #cccccc;
+.scan-code {
+    font-family: monospace;
     font-size: 15px;
+    word-break: break-all;
+    margin-bottom: 12px;
 }
 
-/* TOTAL */
-
-#total {
-    width: 100%;
-    padding: 18px 0;
-    border-bottom: 1px solid #cccccc;
-    text-align: right;
-    font-size: 34px;
-    font-weight: 700;
-}
-
-/* LIST */
-
-#list {
-    width: 100%;
-}
-
-.item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    min-height: 48px;
-
-    padding: 10px 0;
-
-    border-bottom: 1px solid #dddddd;
-
-    font-size: 16px;
-}
-
-.item-code {
-    color: #555555;
-
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.item-price {
-    flex-shrink: 0;
+.scan-decoded {
+    font-size: 18px;
     font-weight: 600;
+    word-break: break-all;
 }
 
-.empty {
-    padding: 18px 0;
-    color: #777777;
-    text-align: center;
+.status {
+    margin-top: 12px;
+    color: #666;
+    font-size: 13px;
 }
 
-/* RESET */
-
-#reset {
-    margin-top: 14px;
-
-    border: 1px solid #111111;
-
-    background: #111111;
-    color: #ffffff;
-
-    padding: 10px 18px;
-
-    font-size: 15px;
-
-    cursor: pointer;
+.error {
+    color: #a00000;
 }
 
-#reset:active {
-    background: #333333;
+.success {
+    color: #176b2c;
+}
+
+#cameraButtons {
+    margin-top: 12px;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .tabs {
+        overflow-x: auto;
+    }
+
+    .tab {
+        white-space: nowrap;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div id="app">
+<div class="app">
 
-    <div id="reader"></div>
+    <div class="tabs">
+        <button class="tab active" data-page="generator">
+            Generator
+        </button>
 
-    <div id="loading">
-        Memproses...
+        <button class="tab" data-page="scanner">
+            Scanner
+        </button>
     </div>
 
-    <div id="total">
-        Rp0
-    </div>
 
-    <div id="list">
-        <div class="empty">
-            Belum ada
+    <!-- GENERATOR -->
+
+    <section id="generator" class="page active">
+
+        <div class="field">
+            <label for="inputText">
+                Data
+            </label>
+
+            <textarea
+                id="inputText"
+                placeholder="image.png"
+                spellcheck="false"
+            ></textarea>
         </div>
-    </div>
 
-    <button id="reset">
-        Reset
-    </button>
+        <button id="generateButton">
+            Generate
+        </button>
+
+
+        <div class="output">
+
+            <div class="output-head">
+                C-COIS
+            </div>
+
+            <div
+                id="generatedCode"
+                class="output-body"
+            >
+                -
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                id="copyButton"
+                class="secondary"
+            >
+                Copy
+            </button>
+
+            <button
+                id="clearButton"
+                class="secondary"
+            >
+                Clear
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- SCANNER -->
+
+    <section id="scanner" class="page">
+
+        <div id="reader"></div>
+
+        <div id="cameraButtons">
+
+            <button
+                id="startCamera"
+            >
+                Start Camera
+            </button>
+
+            <button
+                id="stopCamera"
+                class="secondary"
+            >
+                Stop
+            </button>
+
+        </div>
+
+
+        <div
+            id="scanStatus"
+            class="status"
+        >
+            Kamera belum dimulai.
+        </div>
+
+
+        <div class="scan-result">
+
+            <div
+                id="scannedCode"
+                class="scan-code"
+            >
+                -
+            </div>
+
+            <div
+                id="decodedText"
+                class="scan-decoded"
+            >
+                -
+            </div>
+
+        </div>
+
+    </section>
 
 </div>
+
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
@@ -158,325 +342,484 @@ body {
 
 /*
 ==================================================
-DATABASE PRODUK
+C-COIS SYSTEM
 ==================================================
-Ganti / tambahkan barcode dan harga di sini.
+Berdasarkan System.txt
+
+ID:
+A-M = 0
+N-Z = 1
+
+SUPPORTERS:
+A = b
+B = c
+C = d
+...
+Z = a
+==================================================
 */
 
-const PRODUCTS = {
 
-    "8991002100011": 5000,
-    "8991002100028": 7500,
-    "8991002100035": 10000,
-    "8991002100042": 12500,
-    "8991002100059": 15000,
-    "8991002100066": 20000
+const ID = {
+
+    A: "0",
+    B: "0",
+    C: "0",
+    D: "0",
+    E: "0",
+    F: "0",
+    G: "0",
+    H: "0",
+    I: "0",
+    J: "0",
+    K: "0",
+    L: "0",
+    M: "0",
+
+    N: "1",
+    O: "1",
+    P: "1",
+    Q: "1",
+    R: "1",
+    S: "1",
+    T: "1",
+    U: "1",
+    V: "1",
+    W: "1",
+    X: "1",
+    Y: "1",
+    Z: "1"
+
+};
+
+
+const SUPPORTERS = {
+
+    A: "b",
+    B: "c",
+    C: "d",
+    D: "e",
+    E: "f",
+    F: "g",
+    G: "h",
+    H: "i",
+    I: "j",
+    J: "k",
+    K: "l",
+    L: "m",
+    M: "n",
+
+    N: "o",
+    O: "p",
+    P: "q",
+    Q: "r",
+    R: "s",
+    S: "t",
+    U: "v",
+    V: "x",
+    W: "y",
+    X: "y",
+    Y: "z",
+    Z: "a"
 
 };
 
 
 /*
 ==================================================
-STATE
+REVERSE SUPPORTER
 ==================================================
+Dipakai saat decoding.
 */
 
-let total = 0;
-let items = [];
+const REVERSE_SUPPORTERS = {};
 
-let processing = false;
-let lastProcessedCode = "";
-let lastProcessedTime = 0;
+for (const letter in SUPPORTERS) {
 
+    const supporter = SUPPORTERS[letter];
 
-/*
-==================================================
-ELEMENT
-==================================================
-*/
-
-const totalElement = document.getElementById("total");
-const listElement = document.getElementById("list");
-const loadingElement = document.getElementById("loading");
-const resetButton = document.getElementById("reset");
-
-
-/*
-==================================================
-FORMAT RUPIAH
-==================================================
-*/
-
-function formatRupiah(value) {
-
-    return "Rp" + value.toLocaleString("id-ID");
+    REVERSE_SUPPORTERS[
+        ID[letter] + supporter
+    ] = letter;
 
 }
 
 
 /*
 ==================================================
-UPDATE TOTAL
+GENERATOR
+==================================================
+Contoh:
+
+IMAGE
+
+I = 0j
+M = 0n
+A = 0b
+G = 0h
+E = 0f
+
+hasil:
+
+0j.0n.0b.0h.0f
+
+Jika ada extension:
+
+image.png
+
+menjadi:
+
+0j.0n.0b.0h.0f<.png>
 ==================================================
 */
 
-function updateTotal() {
+function encodeCcois(input) {
 
-    totalElement.textContent = formatRupiah(total);
-
-}
-
-
-/*
-==================================================
-RENDER DAFTAR
-==================================================
-*/
-
-function renderList() {
-
-    listElement.innerHTML = "";
-
-    if (items.length === 0) {
-
-        const empty = document.createElement("div");
-
-        empty.className = "empty";
-        empty.textContent = "Belum ada";
-
-        listElement.appendChild(empty);
-
-        return;
-
+    if (!input) {
+        return "";
     }
 
-    items.forEach(function(item) {
 
-        const row = document.createElement("div");
-
-        row.className = "item";
-
-
-        const code = document.createElement("div");
-
-        code.className = "item-code";
-
-        code.textContent = item.code;
-
-
-        const price = document.createElement("div");
-
-        price.className = "item-price";
-
-        price.textContent = formatRupiah(item.price);
-
-
-        row.appendChild(code);
-        row.appendChild(price);
-
-        listElement.appendChild(row);
-
-    });
-
-}
-
-
-/*
-==================================================
-BEEP
-==================================================
-*/
-
-function beep() {
-
-    try {
-
-        const AudioContext =
-            window.AudioContext ||
-            window.webkitAudioContext;
-
-        const audioContext = new AudioContext();
-
-        const oscillator =
-            audioContext.createOscillator();
-
-        const gain =
-            audioContext.createGain();
-
-
-        oscillator.type = "square";
-
-        oscillator.frequency.value = 1000;
-
-
-        gain.gain.setValueAtTime(
-            0.08,
-            audioContext.currentTime
-        );
-
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.001,
-            audioContext.currentTime + 0.12
-        );
-
-
-        oscillator.connect(gain);
-
-        gain.connect(audioContext.destination);
-
-
-        oscillator.start();
-
-        oscillator.stop(
-            audioContext.currentTime + 0.12
-        );
-
-    } catch (error) {
-
-        console.log("Audio tidak tersedia.");
-
-    }
-
-}
-
-
-/*
-==================================================
-PROSES BARCODE
-==================================================
-*/
-
-async function processBarcode(code) {
-
-    code = code.trim();
+    let result = "";
 
 
     /*
-    Jangan proses kalau sedang memproses barcode lain.
+    Pisahkan extension.
     */
 
-    if (processing) {
-        return;
-    }
+    const lastDot = input.lastIndexOf(".");
 
 
-    /*
-    Jangan membaca barcode yang sama
-    berulang kali dalam waktu singkat.
-    */
+    let name = input;
+    let extension = "";
 
-    const now = Date.now();
 
     if (
-        code === lastProcessedCode &&
-        now - lastProcessedTime < 1500
+        lastDot > 0 &&
+        lastDot < input.length - 1
     ) {
 
-        return;
+        name = input.substring(0, lastDot);
+        extension = input.substring(lastDot + 1);
 
     }
 
 
     /*
-    Cari harga.
+    Encode nama.
     */
 
-    const price = PRODUCTS[code];
+    const parts = [];
 
 
-    /*
-    Kalau barcode tidak ada di database,
-    abaikan.
-    */
+    for (const char of name) {
 
-    if (price === undefined) {
+        const upper = char.toUpperCase();
 
-        return;
+
+        if (
+            ID[upper] !== undefined &&
+            SUPPORTERS[upper] !== undefined
+        ) {
+
+            parts.push(
+                ID[upper] +
+                SUPPORTERS[upper]
+            );
+
+        } else {
+
+            /*
+            Karakter selain A-Z
+            disimpan apa adanya.
+            */
+
+            parts.push(char);
+
+        }
 
     }
 
 
-    /*
-    KUNCI SCANNER
-    */
-
-    processing = true;
+    result = parts.join(".");
 
 
     /*
-    BEEP LANGSUNG
+    Extension.
     */
 
-    beep();
+    if (extension) {
+
+        result += "<." + extension + ">";
+
+    }
 
 
-    /*
-    Tampilkan loading.
-    */
-
-    loadingElement.style.display = "block";
-
-
-    /*
-    Tunggu 1 detik.
-    */
-
-    await new Promise(function(resolve) {
-
-        setTimeout(resolve, 1000);
-
-    });
-
-
-    /*
-    Masukkan produk.
-    */
-
-    total += price;
-
-
-    items.push({
-
-        code: code,
-
-        price: price
-
-    });
-
-
-    /*
-    Simpan barcode terakhir.
-    */
-
-    lastProcessedCode = code;
-
-    lastProcessedTime = Date.now();
-
-
-    /*
-    Update tampilan.
-    */
-
-    updateTotal();
-
-    renderList();
-
-
-    /*
-    Hilangkan loading.
-    */
-
-    loadingElement.style.display = "none";
-
-
-    /*
-    Buka scanner lagi.
-    */
-
-    processing = false;
+    return result;
 
 }
+
+
+/*
+==================================================
+DECODER
+==================================================
+==================================================
+*/
+
+function decodeCcois(code) {
+
+    if (!code) {
+        return "";
+    }
+
+
+    let extension = "";
+
+
+    /*
+    Ambil extension:
+
+    <.png>
+    */
+
+    const extensionMatch =
+        code.match(/<\.([^>]+)>$/);
+
+
+    if (extensionMatch) {
+
+        extension =
+            extensionMatch[1];
+
+        code =
+            code.substring(
+                0,
+                extensionMatch.index
+            );
+
+    }
+
+
+    const tokens = code
+        .split(".")
+        .filter(token => token !== "");
+
+
+    let result = "";
+
+
+    for (const token of tokens) {
+
+        /*
+        Format normal:
+        0j
+        0n
+        1o
+        */
+
+        if (token.length === 2) {
+
+            const letter =
+                REVERSE_SUPPORTERS[token];
+
+            if (letter) {
+
+                result += letter.toLowerCase();
+
+                continue;
+
+            }
+
+        }
+
+
+        /*
+        Karakter biasa.
+        */
+
+        result += token;
+
+    }
+
+
+    if (extension) {
+
+        result += "." + extension;
+
+    }
+
+
+    return result;
+
+}
+
+
+/*
+==================================================
+GENERATOR UI
+==================================================
+*/
+
+const inputText =
+    document.getElementById("inputText");
+
+const generatedCode =
+    document.getElementById("generatedCode");
+
+
+document
+    .getElementById("generateButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            const input =
+                inputText.value.trim();
+
+            if (!input) {
+
+                generatedCode.textContent = "-";
+
+                return;
+
+            }
+
+
+            generatedCode.textContent =
+                encodeCcois(input);
+
+        }
+    );
+
+
+/*
+==================================================
+COPY
+==================================================
+*/
+
+document
+    .getElementById("copyButton")
+    .addEventListener(
+        "click",
+        async function() {
+
+            const code =
+                generatedCode.textContent;
+
+            if (!code || code === "-") {
+                return;
+            }
+
+            try {
+
+                await navigator.clipboard.writeText(code);
+
+            } catch (error) {
+
+                /*
+                Fallback.
+                */
+
+                const textarea =
+                    document.createElement("textarea");
+
+                textarea.value = code;
+
+                document.body.appendChild(textarea);
+
+                textarea.select();
+
+                document.execCommand("copy");
+
+                textarea.remove();
+
+            }
+
+        }
+    );
+
+
+/*
+==================================================
+CLEAR
+==================================================
+*/
+
+document
+    .getElementById("clearButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            inputText.value = "";
+
+            generatedCode.textContent = "-";
+
+        }
+    );
+
+
+/*
+==================================================
+TABS
+==================================================
+*/
+
+const tabs =
+    document.querySelectorAll(".tab");
+
+const pages =
+    document.querySelectorAll(".page");
+
+
+tabs.forEach(function(tab) {
+
+    tab.addEventListener(
+        "click",
+        function() {
+
+            const target =
+                tab.dataset.page;
+
+
+            tabs.forEach(function(item) {
+
+                item.classList.remove("active");
+
+            });
+
+
+            pages.forEach(function(page) {
+
+                page.classList.remove("active");
+
+            });
+
+
+            tab.classList.add("active");
+
+            document
+                .getElementById(target)
+                .classList.add("active");
+
+
+            /*
+            Kamera hanya aktif ketika
+            scanner dibuka.
+            */
+
+            if (target !== "scanner") {
+
+                stopScanner();
+
+            }
+
+        }
+    );
+
+});
 
 
 /*
@@ -485,22 +828,234 @@ SCANNER
 ==================================================
 */
 
-const scanner = new Html5Qrcode("reader");
+let html5QrCode = null;
+
+let scannerRunning = false;
+
+let lastScan = "";
+
+let scanLocked = false;
 
 
-function onScanSuccess(decodedText) {
+const scanStatus =
+    document.getElementById("scanStatus");
 
-    processBarcode(decodedText);
+const scannedCode =
+    document.getElementById("scannedCode");
+
+const decodedText =
+    document.getElementById("decodedText");
+
+
+async function startScanner() {
+
+    if (scannerRunning) {
+        return;
+    }
+
+
+    if (
+        typeof Html5Qrcode ===
+        "undefined"
+    ) {
+
+        scanStatus.textContent =
+            "Library scanner tidak tersedia.";
+
+        scanStatus.className =
+            "status error";
+
+        return;
+
+    }
+
+
+    html5QrCode =
+        new Html5Qrcode("reader");
+
+
+    try {
+
+        await html5QrCode.start(
+
+            {
+                facingMode: "environment"
+            },
+
+            {
+
+                fps: 10,
+
+                qrbox: {
+                    width: 280,
+                    height: 180
+                },
+
+                formatsToSupport: [
+
+                    Html5QrcodeSupportedFormats.QR_CODE,
+
+                    Html5QrcodeSupportedFormats.CODE_128,
+
+                    Html5QrcodeSupportedFormats.CODE_39,
+
+                    Html5QrcodeSupportedFormats.EAN_13,
+
+                    Html5QrcodeSupportedFormats.EAN_8
+
+                ]
+
+            },
+
+            onScanSuccess,
+
+            onScanFailure
+
+        );
+
+
+        scannerRunning = true;
+
+        scanStatus.textContent =
+            "Scanner aktif.";
+
+        scanStatus.className =
+            "status";
+
+
+    } catch (error) {
+
+        scannerRunning = false;
+
+        scanStatus.textContent =
+            "Kamera tidak dapat digunakan.";
+
+        scanStatus.className =
+            "status error";
+
+        console.error(error);
+
+    }
 
 }
 
 
-function onScanFailure(error) {
+async function stopScanner() {
+
+    if (
+        !html5QrCode ||
+        !scannerRunning
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        await html5QrCode.stop();
+
+        html5QrCode.clear();
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+
+    scannerRunning = false;
+
+    scanStatus.textContent =
+        "Kamera dihentikan.";
+
+}
+
+
+/*
+==================================================
+SCAN SUCCESS
+==================================================
+*/
+
+function onScanSuccess(decoded) {
+
+    if (scanLocked) {
+        return;
+    }
+
+
+    decoded = decoded.trim();
+
+
+    if (!decoded) {
+        return;
+    }
+
 
     /*
-    Kosong.
+    Hindari hasil scan yang sama
+    berulang kali.
+    */
 
-    Scanner akan terus mencoba membaca kamera.
+    if (decoded === lastScan) {
+        return;
+    }
+
+
+    scanLocked = true;
+
+    lastScan = decoded;
+
+
+    /*
+    Tampilkan kode.
+    */
+
+    scannedCode.textContent =
+        decoded;
+
+
+    /*
+    Decode C-COIS.
+    */
+
+    const result =
+        decodeCcois(decoded);
+
+
+    decodedText.textContent =
+        result;
+
+
+    scanStatus.textContent =
+        "Kode berhasil dibaca.";
+
+    scanStatus.className =
+        "status success";
+
+
+    /*
+    Beri waktu agar kamera
+    tidak membaca kode yang sama
+    terus-menerus.
+    */
+
+    setTimeout(function() {
+
+        scanLocked = false;
+
+    }, 1200);
+
+}
+
+
+function onScanFailure() {
+
+    /*
+    Sengaja kosong.
+    Scanner terus mencoba frame berikutnya.
     */
 
 }
@@ -508,97 +1063,25 @@ function onScanFailure(error) {
 
 /*
 ==================================================
-START CAMERA
+BUTTON SCANNER
 ==================================================
 */
 
-scanner.start(
-
-    {
-        facingMode: "environment"
-    },
-
-    {
-        fps: 10,
-
-        qrbox: {
-            width: 280,
-            height: 160
-        },
-
-        formatsToSupport: [
-
-            Html5QrcodeSupportedFormats.EAN_13,
-
-            Html5QrcodeSupportedFormats.EAN_8,
-
-            Html5QrcodeSupportedFormats.UPC_A,
-
-            Html5QrcodeSupportedFormats.UPC_E,
-
-            Html5QrcodeSupportedFormats.CODE_128,
-
-            Html5QrcodeSupportedFormats.CODE_39,
-
-            Html5QrcodeSupportedFormats.ITF
-
-        ]
-
-    },
-
-    onScanSuccess,
-
-    onScanFailure
-
-).catch(function(error) {
-
-    console.error(
-        "Kamera tidak dapat digunakan:",
-        error
+document
+    .getElementById("startCamera")
+    .addEventListener(
+        "click",
+        startScanner
     );
 
-});
 
+document
+    .getElementById("stopCamera")
+    .addEventListener(
+        "click",
+        stopScanner
+    );
 
-/*
-==================================================
-RESET
-==================================================
-*/
-
-resetButton.addEventListener(
-    "click",
-    function() {
-
-        total = 0;
-
-        items = [];
-
-        lastProcessedCode = "";
-
-        lastProcessedTime = 0;
-
-        processing = false;
-
-        loadingElement.style.display = "none";
-
-        updateTotal();
-
-        renderList();
-
-    }
-);
-
-
-/*
-==================================================
-INITIAL
-==================================================
-*/
-
-updateTotal();
-
-renderList();
 
 </script>
 
