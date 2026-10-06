@@ -2,207 +2,1300 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 
-<title>C-COIS</title>
+<title>Kasir</title>
 
 <style>
-* {
-    box-sizing: border-box;
+:root{
+    --bg:#0c0e11;
+    --surface:#14171b;
+    --surface2:#191d22;
+    --surface3:#20252b;
+    --border:#2a2f36;
+
+    --text:#f1f2f4;
+    --muted:#8e959f;
+    --muted2:#656d77;
+
+    --purple:#7658d7;
+    --red:#d95050;
+    --green:#50b77b;
+
+    --radius:16px;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
 html,
-body {
-    margin: 0;
-    padding: 0;
-    background: #f4f4f4;
-    color: #111;
-    font-family: Arial, Helvetica, sans-serif;
+body{
+    min-height:100%;
+    background:var(--bg);
+    color:var(--text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
 }
 
-body {
-    padding: 20px;
+button,
+input{
+    font:inherit;
 }
 
-.app {
-    width: 100%;
-    max-width: 900px;
-    margin: auto;
+button{
+    cursor:pointer;
 }
 
-.tabs {
-    display: flex;
-    border-bottom: 1px solid #bbb;
-    margin-bottom: 20px;
+/* ================= APP ================= */
+
+.app{
+    min-height:100vh;
 }
 
-.tab {
-    border: 0;
-    background: transparent;
-    color: #666;
-    padding: 12px 18px;
-    font-size: 15px;
-    cursor: pointer;
+/* ================= TOPBAR ================= */
+
+.topbar{
+    height:66px;
+
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+
+    z-index:40;
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:0 18px;
+
+    background:#101216;
+    border-bottom:1px solid var(--border);
 }
 
-.tab.active {
-    color: #111;
-    border-bottom: 2px solid #111;
+.menu-button{
+    width:40px;
+    height:40px;
+
+    border-radius:11px;
+
+    background:#1b1f24;
+    border:1px solid var(--border);
+
+    color:#e7e9ec;
+
+    display:grid;
+    place-items:center;
+
+    transition:
+        background .18s ease,
+        transform .18s ease;
 }
 
-.page {
-    display: none;
+.menu-button:hover{
+    background:#252a31;
 }
 
-.page.active {
-    display: block;
+.menu-button:active{
+    transform:scale(.94);
 }
 
-textarea,
-input {
-    width: 100%;
-    border: 1px solid #aaa;
-    background: #fff;
-    color: #111;
-    padding: 12px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
-    outline: none;
+.top-title{
+    min-width:0;
 }
 
-textarea {
-    min-height: 130px;
-    resize: vertical;
+.top-title-main{
+    font-size:15px;
+    font-weight:700;
 }
 
-textarea:focus,
-input:focus {
-    border-color: #111;
+.top-title-sub{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:2px;
 }
 
-label {
-    display: block;
-    margin-bottom: 7px;
-    font-size: 14px;
-    color: #555;
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    position:fixed;
+
+    top:0;
+    left:0;
+    bottom:0;
+
+    width:265px;
+
+    z-index:80;
+
+    background:#111419;
+    border-right:1px solid var(--border);
+
+    padding:17px 13px;
+
+    transform:translateX(-100%);
+
+    transition:
+        transform .26s cubic-bezier(.2,.8,.2,1);
 }
 
-.field {
-    margin-bottom: 14px;
+.sidebar.open{
+    transform:translateX(0);
 }
 
-button {
-    border: 1px solid #111;
-    background: #111;
-    color: #fff;
-    padding: 11px 16px;
-    font-size: 14px;
-    cursor: pointer;
+.sidebar-head{
+    height:45px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 5px 0 8px;
+
+    margin-bottom:25px;
 }
 
-button.secondary {
-    background: #fff;
-    color: #111;
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
-button:active {
-    background: #333;
+.logo{
+    width:35px;
+    height:35px;
+
+    border-radius:10px;
+
+    background:#252a31;
+
+    display:grid;
+    place-items:center;
 }
 
-.output {
-    margin-top: 18px;
-    border: 1px solid #aaa;
-    background: #fff;
+.logo-text{
+    font-size:14px;
+    font-weight:700;
 }
 
-.output-head {
-    padding: 10px 12px;
-    border-bottom: 1px solid #ddd;
-    font-size: 13px;
-    color: #666;
+.sidebar-close{
+    width:35px;
+    height:35px;
+
+    border-radius:10px;
+
+    background:#1d2127;
+    border:1px solid var(--border);
+
+    color:#cfd3d8;
+
+    display:grid;
+    place-items:center;
 }
 
-.output-body {
-    padding: 14px;
-    word-break: break-all;
-    font-family: monospace;
-    font-size: 16px;
-    line-height: 1.7;
+.sidebar-label{
+    color:#5e6670;
+
+    font-size:10px;
+    font-weight:700;
+
+    letter-spacing:.08em;
+    text-transform:uppercase;
+
+    padding:0 10px;
+    margin-bottom:8px;
 }
 
-.actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    flex-wrap: wrap;
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
 }
 
-#reader {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    border: 1px solid #aaa;
-    background: #ddd;
-    overflow: hidden;
+.nav-button{
+    width:100%;
+    min-height:47px;
+
+    border:0;
+    border-radius:12px;
+
+    background:transparent;
+
+    color:#9299a3;
+
+    display:flex;
+    align-items:center;
+
+    gap:12px;
+
+    padding:0 12px;
+
+    text-align:left;
+
+    transition:
+        background .16s ease,
+        color .16s ease,
+        transform .16s ease;
 }
 
-#reader video {
-    width: 100% !important;
+.nav-button:hover{
+    background:#1b1f24;
+    color:#e9ebee;
 }
 
-.scan-result {
-    margin-top: 16px;
-    border: 1px solid #aaa;
-    background: #fff;
-    padding: 14px;
+.nav-button:active{
+    transform:scale(.985);
 }
 
-.scan-code {
-    font-family: monospace;
-    font-size: 15px;
-    word-break: break-all;
-    margin-bottom: 12px;
+.nav-button.active{
+    background:#252a31;
+    color:#fff;
 }
 
-.scan-decoded {
-    font-size: 18px;
-    font-weight: 600;
-    word-break: break-all;
+.nav-icon{
+    width:20px;
+    height:20px;
+
+    flex:none;
 }
 
-.status {
-    margin-top: 12px;
-    color: #666;
-    font-size: 13px;
+.sidebar-footer{
+    position:absolute;
+    left:13px;
+    right:13px;
+    bottom:15px;
+
+    border-top:1px solid var(--border);
+
+    padding-top:14px;
 }
 
-.error {
-    color: #a00000;
+.sidebar-info{
+    background:#171b20;
+
+    border:1px solid var(--border);
+    border-radius:11px;
+
+    padding:10px;
+
+    color:#737b85;
+
+    font-size:10px;
+    line-height:1.5;
 }
 
-.success {
-    color: #176b2c;
+/* ================= OVERLAY ================= */
+
+.sidebar-overlay{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.58);
+
+    z-index:70;
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:
+        opacity .22s ease,
+        visibility .22s ease;
 }
 
-#cameraButtons {
-    margin-top: 12px;
+.sidebar-overlay.show{
+    opacity:1;
+    visibility:visible;
 }
 
-.hidden {
-    display: none;
+/* ================= MAIN ================= */
+
+.main{
+    min-height:100vh;
+    padding-top:66px;
 }
 
-@media (max-width: 600px) {
-    body {
-        padding: 10px;
+.content{
+    width:100%;
+    max-width:1450px;
+
+    margin:auto;
+
+    padding:24px;
+}
+
+.page{
+    display:none;
+
+    animation:
+        pageIn .2s ease;
+}
+
+.page.active{
+    display:block;
+}
+
+@keyframes pageIn{
+    from{
+        opacity:0;
+        transform:translateY(5px);
     }
 
-    .tabs {
-        overflow-x: auto;
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ================= COMMON ================= */
+
+.section{
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:21px;
+
+    margin-bottom:16px;
+}
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:17px;
+}
+
+.section-title{
+    font-size:16px;
+    font-weight:700;
+}
+
+.section-description{
+    color:var(--muted);
+
+    font-size:12px;
+
+    margin-top:4px;
+}
+
+.primary{
+    min-height:42px;
+
+    padding:0 16px;
+
+    border:0;
+    border-radius:10px;
+
+    background:#f0f1f3;
+    color:#111317;
+
+    font-weight:650;
+
+    transition:
+        background .16s ease,
+        transform .16s ease;
+}
+
+.primary:hover{
+    background:#dfe1e4;
+}
+
+.primary:active{
+    transform:scale(.98);
+}
+
+.secondary{
+    min-height:42px;
+
+    padding:0 15px;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    background:#22272d;
+    color:#e2e5e9;
+}
+
+.danger{
+    min-height:40px;
+
+    padding:0 13px;
+
+    border:1px solid #4c292d;
+    border-radius:10px;
+
+    background:#29181b;
+    color:#e78383;
+}
+
+.small{
+    min-height:35px;
+    padding:0 11px;
+    font-size:11px;
+}
+
+.search{
+    width:100%;
+    height:44px;
+
+    background:#101317;
+
+    border:1px solid var(--border);
+    border-radius:11px;
+
+    outline:none;
+
+    color:white;
+
+    padding:0 13px;
+
+    margin-bottom:14px;
+
+    transition:border .16s ease;
+}
+
+.search:focus{
+    border-color:#555c66;
+}
+
+.empty{
+    width:100%;
+
+    padding:35px 15px;
+
+    text-align:center;
+
+    border:1px dashed #30353c;
+    border-radius:12px;
+
+    color:#68717c;
+
+    font-size:12px;
+}
+
+/* ================= KASIR ================= */
+
+.cash-layout{
+    display:grid;
+
+    grid-template-columns:minmax(0,1fr) 365px;
+
+    gap:16px;
+}
+
+.product-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(175px,1fr));
+
+    gap:11px;
+}
+
+.product-card{
+    overflow:hidden;
+
+    border:1px solid var(--border);
+    border-radius:14px;
+
+    background:#191d22;
+
+    cursor:pointer;
+
+    transition:
+        transform .16s ease,
+        border .16s ease;
+}
+
+.product-card:hover{
+    border-color:#4a515a;
+    transform:translateY(-1px);
+}
+
+.product-card:active{
+    transform:scale(.99);
+}
+
+.product-photo{
+    width:100%;
+    height:130px;
+
+    object-fit:cover;
+
+    display:block;
+
+    background:#242930;
+}
+
+.product-empty-photo{
+    width:100%;
+    height:130px;
+
+    display:grid;
+    place-items:center;
+
+    background:#20252b;
+
+    color:#68707a;
+
+    font-size:11px;
+}
+
+.product-info{
+    padding:12px;
+}
+
+.product-name{
+    font-size:13px;
+    font-weight:650;
+
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.product-price{
+    font-size:14px;
+
+    margin-top:7px;
+}
+
+.product-meta{
+    color:var(--muted);
+
+    font-size:10px;
+
+    margin-top:5px;
+}
+
+/* ================= CART ================= */
+
+.cart-section{
+    position:sticky;
+    top:82px;
+}
+
+.cart-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.cart-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px;
+
+    background:#191d22;
+
+    border:1px solid var(--border);
+    border-radius:11px;
+}
+
+.cart-name{
+    font-size:12px;
+    font-weight:650;
+}
+
+.cart-price{
+    color:var(--muted);
+
+    font-size:10px;
+
+    margin-top:4px;
+}
+
+.quantity{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.quantity button{
+    width:27px;
+    height:27px;
+
+    border:0;
+    border-radius:8px;
+
+    background:#292e35;
+    color:white;
+}
+
+.quantity span{
+    min-width:18px;
+
+    text-align:center;
+
+    font-size:12px;
+}
+
+.summary{
+    border-top:1px solid var(--border);
+
+    margin-top:16px;
+    padding-top:14px;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+
+    padding:6px 0;
+
+    color:#9ba2ac;
+
+    font-size:12px;
+}
+
+.summary-total{
+    color:white;
+
+    font-size:18px;
+    font-weight:750;
+
+    padding-top:12px;
+}
+
+.cart-tax{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    background:#191d22;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    padding:9px 11px;
+
+    margin:7px 0;
+}
+
+.cart-tax input{
+    width:55px;
+
+    border:0;
+    outline:0;
+
+    color:white;
+
+    background:transparent;
+
+    text-align:right;
+}
+
+/* ================= BARCODE ================= */
+
+.barcode-box{
+    display:flex;
+    gap:8px;
+
+    margin-bottom:12px;
+}
+
+.barcode-box input{
+    flex:1;
+
+    height:44px;
+
+    background:#101317;
+
+    border:1px solid var(--border);
+
+    border-radius:11px;
+
+    color:white;
+
+    outline:none;
+
+    padding:0 13px;
+}
+
+.barcode-box button{
+    width:44px;
+
+    border-radius:11px;
+
+    background:#242930;
+
+    border:1px solid var(--border);
+
+    color:white;
+
+    display:grid;
+    place-items:center;
+}
+
+/* ================= MODAL ================= */
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+
+    z-index:100;
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    padding:16px;
+
+    background:rgba(0,0,0,.72);
+}
+
+.modal-overlay.open{
+    display:flex;
+}
+
+.modal{
+    width:min(560px,100%);
+    max-height:92vh;
+
+    overflow:auto;
+
+    background:#171a1f;
+
+    border:1px solid #30353d;
+
+    border-radius:20px;
+
+    animation:modalIn .2s ease;
+}
+
+@keyframes modalIn{
+    from{
+        opacity:0;
+        transform:translateY(9px) scale(.985);
     }
 
-    .tab {
-        white-space: nowrap;
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+.modal-header{
+    min-height:65px;
+
+    padding:0 20px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    border-bottom:1px solid var(--border);
+}
+
+.modal-title{
+    font-size:17px;
+    font-weight:700;
+}
+
+.close-button{
+    width:38px;
+    height:38px;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    background:#23272d;
+    color:white;
+
+    display:grid;
+    place-items:center;
+}
+
+.modal-body{
+    padding:20px;
+}
+
+.modal-footer{
+    padding:14px 20px;
+
+    border-top:1px solid var(--border);
+
+    display:flex;
+    justify-content:flex-end;
+
+    gap:8px;
+}
+
+/* ================= FORM ================= */
+
+.field{
+    margin-bottom:16px;
+}
+
+.field-label{
+    display:block;
+
+    color:#a5acb5;
+
+    font-size:11px;
+
+    margin-bottom:7px;
+}
+
+.input{
+    width:100%;
+    height:46px;
+
+    background:#101317;
+
+    border:1px solid #30353d;
+    border-radius:11px;
+
+    outline:none;
+
+    color:white;
+
+    padding:0 12px;
+}
+
+.input:focus{
+    border-color:#626a75;
+}
+
+/* ================= UPLOAD ================= */
+
+.upload{
+    width:100%;
+    min-height:175px;
+
+    background:#101317;
+
+    border:1px dashed #444b55;
+
+    border-radius:14px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    position:relative;
+
+    overflow:hidden;
+
+    transition:
+        background .16s ease,
+        border .16s ease;
+}
+
+.upload:hover{
+    background:#15191e;
+    border-color:#69717c;
+}
+
+.upload input{
+    display:none;
+}
+
+.upload-content{
+    text-align:center;
+}
+
+.upload-icon{
+    width:42px;
+    height:42px;
+
+    border-radius:11px;
+
+    background:#252a30;
+
+    display:grid;
+    place-items:center;
+
+    margin:auto auto 9px;
+}
+
+.upload-text{
+    color:#d7dbe0;
+    font-size:12px;
+}
+
+.upload-hint{
+    color:#6e7680;
+    font-size:10px;
+    margin-top:4px;
+}
+
+.upload-preview{
+    display:none;
+
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+.upload.has-preview .upload-preview{
+    display:block;
+}
+
+.upload.has-preview .upload-content{
+    display:none;
+}
+
+/* ================= TABUNGAN ================= */
+
+.saving-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(235px,1fr));
+
+    gap:13px;
+}
+
+.saving-card{
+    background:#171b20;
+
+    border:1px solid var(--border);
+    border-radius:16px;
+
+    overflow:hidden;
+
+    cursor:pointer;
+
+    transition:
+        transform .16s ease,
+        border .16s ease;
+}
+
+.saving-card:hover{
+    border-color:#4a515a;
+    transform:translateY(-1px);
+}
+
+.saving-photo{
+    width:100%;
+    height:165px;
+
+    object-fit:cover;
+
+    display:block;
+
+    background:#242930;
+}
+
+.saving-no-photo{
+    height:165px;
+
+    background:#20252b;
+
+    display:grid;
+    place-items:center;
+
+    color:#69717b;
+
+    font-size:11px;
+}
+
+.saving-body{
+    padding:15px;
+}
+
+.saving-title{
+    font-size:14px;
+    font-weight:700;
+}
+
+.saving-money{
+    display:flex;
+    justify-content:space-between;
+
+    margin-top:8px;
+
+    font-size:11px;
+}
+
+.saving-current{
+    color:#e4e7ea;
+}
+
+.saving-target{
+    color:#777f89;
+}
+
+.progress{
+    height:8px;
+
+    background:#292e34;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin-top:12px;
+}
+
+.progress-bar{
+    height:100%;
+
+    background:var(--purple);
+
+    transition:width .3s ease;
+}
+
+.saving-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-top:9px;
+
+    font-size:10px;
+
+    color:#7d858f;
+}
+
+.achieved{
+    color:var(--green);
+}
+
+/* ================= LOCK ================= */
+
+.achievement{
+    display:none;
+
+    text-align:center;
+
+    padding:22px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.achievement.show{
+    display:block;
+}
+
+.lock-icon{
+    width:58px;
+    height:58px;
+
+    color:var(--green);
+
+    animation:lockIn .45s ease;
+}
+
+@keyframes lockIn{
+    0%{
+        opacity:0;
+        transform:scale(.55) rotate(-8deg);
+    }
+
+    70%{
+        transform:scale(1.08) rotate(2deg);
+    }
+
+    100%{
+        opacity:1;
+        transform:scale(1) rotate(0);
+    }
+}
+
+.achievement-title{
+    font-size:19px;
+    font-weight:750;
+
+    margin-top:7px;
+}
+
+.achievement-sub{
+    color:var(--muted);
+
+    font-size:11px;
+
+    margin-top:4px;
+}
+
+/* ================= HISTORY ================= */
+
+.history-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.history-card{
+    background:#171b20;
+
+    border:1px solid var(--border);
+
+    border-radius:13px;
+
+    padding:14px;
+}
+
+.history-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.history-total{
+    font-size:14px;
+    font-weight:700;
+}
+
+.history-date{
+    color:#727a84;
+    font-size:10px;
+}
+
+.history-items{
+    color:#777f89;
+
+    font-size:10px;
+
+    line-height:1.6;
+
+    margin-top:7px;
+}
+
+/* ================= TAX PAGE ================= */
+
+.tax-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(230px,1fr));
+
+    gap:13px;
+}
+
+.tax-card{
+    background:#181c21;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:17px;
+}
+
+.tax-card-title{
+    font-size:13px;
+    font-weight:700;
+}
+
+.tax-card-desc{
+    color:var(--muted);
+
+    font-size:10px;
+
+    margin-top:5px;
+}
+
+.tax-input{
+    width:100%;
+
+    height:45px;
+
+    margin-top:14px;
+
+    background:#101317;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    color:white;
+
+    outline:none;
+
+    padding:0 12px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1000px){
+
+    .cash-layout{
+        grid-template-columns:1fr;
+    }
+
+    .cart-section{
+        position:static;
+    }
+}
+
+@media(max-width:650px){
+
+    .content{
+        padding:15px;
+    }
+
+    .section{
+        padding:16px;
+    }
+
+    .product-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:8px;
+    }
+
+    .product-photo,
+    .product-empty-photo{
+        height:110px;
+    }
+
+    .saving-grid{
+        grid-template-columns:1fr;
+    }
+
+    .topbar{
+        padding:0 13px;
+    }
+
+    .top-title-main{
+        font-size:14px;
+    }
+
+    .modal{
+        border-radius:17px;
+    }
+}
+
+@media(max-width:390px){
+
+    .product-info{
+        padding:10px;
+    }
+
+    .product-name{
+        font-size:12px;
+    }
+
+    .product-price{
+        font-size:13px;
     }
 }
 </style>
@@ -210,878 +1303,3165 @@ button:active {
 
 <body>
 
-<div class="app">
+<!-- ================= TOP BAR ================= -->
 
-    <div class="tabs">
-        <button class="tab active" data-page="generator">
-            Generator
+<header class="topbar">
+
+    <button
+        class="menu-button"
+        id="menuButton"
+        aria-label="Buka menu"
+    >
+        <svg width="20" height="20" viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="1.8"
+             stroke-linecap="round">
+            <path d="M4 7h16"/>
+            <path d="M4 12h16"/>
+            <path d="M4 17h16"/>
+        </svg>
+    </button>
+
+    <div class="top-title">
+        <div
+            class="top-title-main"
+            id="topTitle"
+        >
+            Kasir
+        </div>
+
+        <div
+            class="top-title-sub"
+            id="topSubtitle"
+        >
+            dev : farid
+        </div>
+    </div>
+
+</header>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside
+    class="sidebar"
+    id="sidebar"
+>
+
+    <div class="sidebar-head">
+
+        <div class="logo-area">
+
+            <div class="logo">
+
+                <svg width="20" height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8">
+                    <rect x="3" y="5" width="18" height="14" rx="2"/>
+                    <path d="M7 9h10"/>
+                    <path d="M7 13h3"/>
+                    <path d="M14 13h3"/>
+                </svg>
+
+            </div>
+
+            <div class="logo-text">
+                Kasir
+            </div>
+
+        </div>
+
+        <button
+            class="sidebar-close"
+            id="sidebarClose"
+        >
+            <svg width="18" height="18"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path d="M6 6l12 12"/>
+                <path d="M18 6L6 18"/>
+            </svg>
         </button>
 
-        <button class="tab" data-page="scanner">
-            Scanner
-        </button>
     </div>
 
 
-    <!-- GENERATOR -->
+    <div class="sidebar-label">
+        Menu
+    </div>
 
-    <section id="generator" class="page active">
 
-        <div class="field">
-            <label for="inputText">
-                Data
-            </label>
+    <nav class="nav">
 
-            <textarea
-                id="inputText"
-                placeholder="image.png"
-                spellcheck="false"
-            ></textarea>
-        </div>
+        <button
+            class="nav-button active"
+            data-page="cashier"
+        >
 
-        <button id="generateButton">
-            Generate
+            <svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+            >
+                <rect x="3" y="5" width="18" height="14" rx="2"/>
+                <path d="M7 9h10"/>
+                <path d="M7 13h3"/>
+                <path d="M15 13h2"/>
+            </svg>
+
+            <span>Kasir</span>
+
         </button>
 
 
-        <div class="output">
+        <button
+            class="nav-button"
+            data-page="savings"
+        >
 
-            <div class="output-head">
-                C-COIS
+            <svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+            >
+                <path d="M5 7h14v14H5z"/>
+                <path d="M8 7V4h8v3"/>
+                <path d="M8 11h8"/>
+                <path d="M8 15h5"/>
+            </svg>
+
+            <span>Tabungan</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            data-page="history"
+        >
+
+            <svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+            >
+                <path d="M4 5h16v14H4z"/>
+                <path d="M8 9h8"/>
+                <path d="M8 13h5"/>
+                <path d="M8 17h8"/>
+            </svg>
+
+            <span>Riwayat</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            data-page="tax"
+        >
+
+            <svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+            >
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M8 9h8"/>
+                <path d="M8 12h8"/>
+                <path d="M8 15h5"/>
+            </svg>
+
+            <span>Pajak</span>
+
+        </button>
+
+    </nav>
+
+
+    <div class="sidebar-footer">
+
+        <div class="sidebar-info">
+            dev : farid<br>
+            Data disimpan secara lokal pada perangkat.
+        </div>
+
+    </div>
+
+</aside>
+
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay"
+></div>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+<div class="content">
+
+
+<!-- ========================================================= -->
+<!-- KASIR -->
+<!-- ========================================================= -->
+
+<section
+    class="page active"
+    id="page-cashier"
+>
+
+    <div class="cash-layout">
+
+        <div>
+
+            <div class="section">
+
+                <div class="section-header">
+
+                    <div>
+                        <div class="section-title">
+                            Produk
+                        </div>
+
+                        <div class="section-description">
+                            Cari berdasarkan nama atau kode barcode.
+                        </div>
+                    </div>
+
+                    <button
+                        class="primary"
+                        id="addProductButton"
+                    >
+                        Tambah produk
+                    </button>
+
+                </div>
+
+
+                <!-- BARCODE -->
+
+                <div class="barcode-box">
+
+                    <input
+                        id="barcodeSearch"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        placeholder="Scan atau masukkan barcode..."
+                    >
+
+                    <button
+                        id="barcodeSearchButton"
+                        title="Cari barcode"
+                    >
+
+                        <svg width="19" height="19"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8">
+                            <circle cx="11" cy="11" r="6"/>
+                            <path d="m16 16 5 5"/>
+                        </svg>
+
+                    </button>
+
+                </div>
+
+
+                <input
+                    class="search"
+                    id="productSearch"
+                    type="text"
+                    placeholder="Cari nama produk..."
+                >
+
+
+                <div
+                    class="product-grid"
+                    id="productGrid"
+                ></div>
+
             </div>
+
+        </div>
+
+
+        <!-- CART -->
+
+        <div
+            class="section cart-section"
+        >
+
+            <div class="section-header">
+
+                <div>
+
+                    <div class="section-title">
+                        Transaksi
+                    </div>
+
+                    <div
+                        class="section-description"
+                        id="cartCount"
+                    >
+                        0 item
+                    </div>
+
+                </div>
+
+                <button
+                    class="danger small"
+                    id="clearCart"
+                >
+                    Kosongkan
+                </button>
+
+            </div>
+
 
             <div
-                id="generatedCode"
-                class="output-body"
-            >
-                -
+                class="cart-list"
+                id="cartList"
+            ></div>
+
+
+            <div class="summary">
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">Rp0</span>
+                </div>
+
+
+                <div class="cart-tax">
+
+                    <span>Pajak</span>
+
+                    <span>
+                        <input
+                            id="cartTax"
+                            type="number"
+                            min="0"
+                            max="100"
+                            value="0"
+                        >
+                        %
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+                    <span>Pajak</span>
+                    <span id="taxValue">Rp0</span>
+                </div>
+
+
+                <div
+                    class="summary-row summary-total"
+                >
+                    <span>Total</span>
+                    <span id="total">Rp0</span>
+                </div>
+
+
+                <button
+                    class="primary"
+                    id="checkoutButton"
+                    style="width:100%;margin-top:12px;"
+                >
+                    Selesaikan transaksi
+                </button>
+
             </div>
 
         </div>
 
+    </div>
 
-        <div class="actions">
-
-            <button
-                id="copyButton"
-                class="secondary"
-            >
-                Copy
-            </button>
-
-            <button
-                id="clearButton"
-                class="secondary"
-            >
-                Clear
-            </button>
-
-        </div>
-
-    </section>
+</section>
 
 
-    <!-- SCANNER -->
+<!-- ========================================================= -->
+<!-- TABUNGAN -->
+<!-- ========================================================= -->
 
-    <section id="scanner" class="page">
+<section
+    class="page"
+    id="page-savings"
+>
 
-        <div id="reader"></div>
+    <div class="section">
 
-        <div id="cameraButtons">
+        <div class="section-header">
 
-            <button
-                id="startCamera"
-            >
-                Start Camera
-            </button>
+            <div>
+
+                <div class="section-title">
+                    Tabungan
+                </div>
+
+                <div class="section-description">
+                    Buat target dan masukkan nominal yang ditabung.
+                </div>
+
+            </div>
 
             <button
-                id="stopCamera"
-                class="secondary"
+                class="primary"
+                id="addSavingButton"
             >
-                Stop
+                Buat tabungan
             </button>
 
         </div>
 
 
         <div
-            id="scanStatus"
-            class="status"
+            class="saving-grid"
+            id="savingGrid"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- RIWAYAT -->
+<!-- ========================================================= -->
+
+<section
+    class="page"
+    id="page-history"
+>
+
+    <div class="section">
+
+        <div class="section-header">
+
+            <div>
+
+                <div class="section-title">
+                    Riwayat transaksi
+                </div>
+
+                <div class="section-description">
+                    Semua transaksi yang sudah diselesaikan.
+                </div>
+
+            </div>
+
+            <button
+                class="danger small"
+                id="clearHistory"
+            >
+                Hapus semua
+            </button>
+
+        </div>
+
+
+        <div
+            class="history-list"
+            id="historyList"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- PAJAK -->
+<!-- ========================================================= -->
+
+<section
+    class="page"
+    id="page-tax"
+>
+
+    <div class="section">
+
+        <div class="section-header">
+
+            <div>
+
+                <div class="section-title">
+                    Pajak
+                </div>
+
+                <div class="section-description">
+                    Atur persentase pajak yang digunakan pada transaksi.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="tax-grid">
+
+            <div class="tax-card">
+
+                <div class="tax-card-title">
+                    Pajak transaksi
+                </div>
+
+                <div class="tax-card-desc">
+                    Persentase pajak yang akan digunakan.
+                </div>
+
+                <input
+                    class="tax-input"
+                    id="globalTax"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    value="0"
+                >
+
+            </div>
+
+
+            <div class="tax-card">
+
+                <div class="tax-card-title">
+                    Status
+                </div>
+
+                <div class="tax-card-desc">
+                    Pengaturan pajak saat ini.
+                </div>
+
+                <div
+                    id="taxStatus"
+                    style="
+                        font-size:22px;
+                        font-weight:750;
+                        margin-top:14px;
+                    "
+                >
+                    0%
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</div>
+</main>
+
+
+<!-- ========================================================= -->
+<!-- PRODUCT MODAL -->
+<!-- ========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="productModal"
+>
+
+<div class="modal">
+
+    <div class="modal-header">
+
+        <div class="modal-title">
+            Tambah produk
+        </div>
+
+        <button
+            class="close-button"
+            data-close="productModal"
         >
-            Kamera belum dimulai.
+            <svg width="18" height="18"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path d="M6 6l12 12"/>
+                <path d="M18 6L6 18"/>
+            </svg>
+        </button>
+
+    </div>
+
+
+    <form id="productForm">
+
+        <div class="modal-body">
+
+            <div class="field">
+
+                <label class="field-label">
+                    Foto produk
+                </label>
+
+                <label
+                    class="upload"
+                    id="productUpload"
+                >
+
+                    <input
+                        id="productPhoto"
+                        type="file"
+                        accept="image/*"
+                    >
+
+                    <img
+                        class="upload-preview"
+                        id="productPreview"
+                    >
+
+                    <div class="upload-content">
+
+                        <div class="upload-icon">
+
+                            <svg width="21" height="21"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8">
+                                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                                <circle cx="8.5" cy="9" r="1.5"/>
+                                <path d="m21 15-4-4L7 20"/>
+                            </svg>
+
+                        </div>
+
+                        <div class="upload-text">
+                            Pilih foto produk
+                        </div>
+
+                        <div class="upload-hint">
+                            Tekan seluruh kotak ini
+                        </div>
+
+                    </div>
+
+                </label>
+
+            </div>
+
+
+            <div class="field">
+
+                <label class="field-label">
+                    Nama produk
+                </label>
+
+                <input
+                    class="input"
+                    id="productName"
+                    required
+                    placeholder="Contoh: Indomie Goreng"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label class="field-label">
+                    Harga
+                </label>
+
+                <input
+                    class="input"
+                    id="productPrice"
+                    type="number"
+                    min="0"
+                    required
+                    placeholder="3500"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label class="field-label">
+                    Stok
+                </label>
+
+                <input
+                    class="input"
+                    id="productStock"
+                    type="number"
+                    min="0"
+                    required
+                    value="0"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label class="field-label">
+                    Kode / Barcode
+                </label>
+
+                <input
+                    class="input"
+                    id="productBarcode"
+                    inputmode="numeric"
+                    placeholder="Contoh: 8998866201017"
+                >
+
+            </div>
+
         </div>
 
 
-        <div class="scan-result">
+        <div class="modal-footer">
 
-            <div
-                id="scannedCode"
-                class="scan-code"
+            <button
+                type="button"
+                class="secondary"
+                data-close="productModal"
             >
-                -
-            </div>
+                Batal
+            </button>
 
-            <div
-                id="decodedText"
-                class="scan-decoded"
+            <button
+                class="primary"
+                type="submit"
             >
-                -
-            </div>
+                Simpan
+            </button>
 
         </div>
 
-    </section>
+    </form>
+
+</div>
 
 </div>
 
 
-<script src="https://unpkg.com/html5-qrcode"></script>
+<!-- ========================================================= -->
+<!-- SAVING MODAL -->
+<!-- ========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="savingModal"
+>
+
+<div class="modal">
+
+    <div class="modal-header">
+
+        <div class="modal-title">
+            Buat tabungan
+        </div>
+
+        <button
+            class="close-button"
+            data-close="savingModal"
+        >
+            <svg width="18" height="18"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path d="M6 6l12 12"/>
+                <path d="M18 6L6 18"/>
+            </svg>
+        </button>
+
+    </div>
+
+
+    <form id="savingForm">
+
+        <div class="modal-body">
+
+            <div class="field">
+
+                <label class="field-label">
+                    Foto target
+                </label>
+
+                <label
+                    class="upload"
+                    id="savingUpload"
+                >
+
+                    <input
+                        id="savingPhoto"
+                        type="file"
+                        accept="image/*"
+                    >
+
+                    <img
+                        class="upload-preview"
+                        id="savingPreview"
+                    >
+
+                    <div class="upload-content">
+
+                        <div class="upload-icon">
+
+                            <svg width="21" height="21"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8">
+                                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                                <circle cx="8.5" cy="9" r="1.5"/>
+                                <path d="m21 15-4-4L7 20"/>
+                            </svg>
+
+                        </div>
+
+                        <div class="upload-text">
+                            Pilih foto target
+                        </div>
+
+                        <div class="upload-hint">
+                            Tekan seluruh kotak ini
+                        </div>
+
+                    </div>
+
+                </label>
+
+            </div>
+
+
+            <div class="field">
+
+                <label class="field-label">
+                    Judul
+                </label>
+
+                <input
+                    class="input"
+                    id="savingTitle"
+                    required
+                    placeholder="Contoh: Beli sepatu"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label class="field-label">
+                    Target harga
+                </label>
+
+                <input
+                    class="input"
+                    id="savingTarget"
+                    type="number"
+                    min="1"
+                    required
+                    placeholder="500000"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="secondary"
+                data-close="savingModal"
+            >
+                Batal
+            </button>
+
+            <button
+                class="primary"
+                type="submit"
+            >
+                Buat tabungan
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- SAVING DETAIL -->
+<!-- ========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="savingDetailModal"
+>
+
+<div class="modal">
+
+    <div class="modal-header">
+
+        <div class="modal-title">
+            Tabungan
+        </div>
+
+        <button
+            class="close-button"
+            data-close="savingDetailModal"
+        >
+            <svg width="18" height="18"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path d="M6 6l12 12"/>
+                <path d="M18 6L6 18"/>
+            </svg>
+        </button>
+
+    </div>
+
+
+    <div
+        class="achievement"
+        id="achievement"
+    >
+
+        <svg
+            class="lock-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+        >
+            <rect x="5" y="10" width="14" height="10" rx="2"/>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+            <circle cx="12" cy="15" r="1"/>
+        </svg>
+
+        <div class="achievement-title">
+            Tercapai
+        </div>
+
+        <div class="achievement-sub">
+            Target tabungan sudah terpenuhi.
+        </div>
+
+    </div>
+
+
+    <div class="modal-body">
+
+        <div id="savingDetail"></div>
+
+
+        <div class="field" style="margin-top:20px;">
+
+            <label class="field-label">
+                Nabung hari ini
+            </label>
+
+            <input
+                class="input"
+                id="todayAmount"
+                type="number"
+                min="1"
+                placeholder="Masukkan nominal"
+            >
+
+        </div>
+
+
+        <button
+            class="primary"
+            id="saveToday"
+            style="width:100%;"
+        >
+            Simpan setoran
+        </button>
+
+
+        <div style="margin-top:20px;">
+
+            <div
+                class="section-title"
+                style="font-size:13px;margin-bottom:9px;"
+            >
+                Riwayat setoran
+            </div>
+
+            <div
+                class="history-list"
+                id="savingHistory"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button
+            class="danger"
+            id="deleteSaving"
+        >
+            Hapus tabungan
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
 
 <script>
+/* =========================================================
+   STORAGE
+========================================================= */
 
-/*
-==================================================
-C-COIS SYSTEM
-==================================================
-Berdasarkan System.txt
-
-ID:
-A-M = 0
-N-Z = 1
-
-SUPPORTERS:
-A = b
-B = c
-C = d
-...
-Z = a
-==================================================
-*/
+const PRODUCTS_KEY = "farid_kasir_products_v5";
+const HISTORY_KEY = "farid_kasir_history_v5";
+const SAVINGS_KEY = "farid_kasir_savings_v5";
+const TAX_KEY = "farid_kasir_tax_v5";
 
 
-const ID = {
+let products =
+    JSON.parse(
+        localStorage.getItem(PRODUCTS_KEY) || "[]"
+    );
 
-    A: "0",
-    B: "0",
-    C: "0",
-    D: "0",
-    E: "0",
-    F: "0",
-    G: "0",
-    H: "0",
-    I: "0",
-    J: "0",
-    K: "0",
-    L: "0",
-    M: "0",
+let histories =
+    JSON.parse(
+        localStorage.getItem(HISTORY_KEY) || "[]"
+    );
 
-    N: "1",
-    O: "1",
-    P: "1",
-    Q: "1",
-    R: "1",
-    S: "1",
-    T: "1",
-    U: "1",
-    V: "1",
-    W: "1",
-    X: "1",
-    Y: "1",
-    Z: "1"
+let savings =
+    JSON.parse(
+        localStorage.getItem(SAVINGS_KEY) || "[]"
+    );
+
+let tax =
+    Number(
+        localStorage.getItem(TAX_KEY) || 0
+    );
+
+
+let cart = [];
+
+let selectedSaving = null;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function saveProducts(){
+    localStorage.setItem(
+        PRODUCTS_KEY,
+        JSON.stringify(products)
+    );
+}
+
+function saveHistories(){
+    localStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify(histories)
+    );
+}
+
+function saveSavings(){
+    localStorage.setItem(
+        SAVINGS_KEY,
+        JSON.stringify(savings)
+    );
+}
+
+function saveTax(){
+    localStorage.setItem(
+        TAX_KEY,
+        String(tax)
+    );
+}
+
+function money(value){
+
+    return new Intl.NumberFormat(
+        "id-ID",
+        {
+            style:"currency",
+            currency:"IDR",
+            maximumFractionDigits:0
+        }
+    ).format(Number(value) || 0);
+
+}
+
+function escapeHTML(value){
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+function dateNow(){
+
+    return new Date()
+        .toLocaleString(
+            "id-ID",
+            {
+                day:"2-digit",
+                month:"short",
+                year:"numeric",
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const sidebarOverlay =
+    document.getElementById("sidebarOverlay");
+
+function openSidebar(){
+
+    sidebar.classList.add("open");
+
+    sidebarOverlay.classList.add("show");
+
+}
+
+function closeSidebar(){
+
+    sidebar.classList.remove("open");
+
+    sidebarOverlay.classList.remove("show");
+
+}
+
+document
+    .getElementById("menuButton")
+    .addEventListener(
+        "click",
+        openSidebar
+    );
+
+document
+    .getElementById("sidebarClose")
+    .addEventListener(
+        "click",
+        closeSidebar
+    );
+
+sidebarOverlay
+    .addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+/* =========================================================
+   PAGES
+========================================================= */
+
+const pageData = {
+
+    cashier:{
+        title:"Kasir",
+        subtitle:"Kelola produk dan transaksi"
+    },
+
+    savings:{
+        title:"Tabungan",
+        subtitle:"Atur target dan setoran"
+    },
+
+    history:{
+        title:"Riwayat",
+        subtitle:"Riwayat transaksi"
+    },
+
+    tax:{
+        title:"Pajak",
+        subtitle:"Pengaturan pajak"
+    }
 
 };
 
 
-const SUPPORTERS = {
-
-    A: "b",
-    B: "c",
-    C: "d",
-    D: "e",
-    E: "f",
-    F: "g",
-    G: "h",
-    H: "i",
-    I: "j",
-    J: "k",
-    K: "l",
-    L: "m",
-    M: "n",
-
-    N: "o",
-    O: "p",
-    P: "q",
-    Q: "r",
-    R: "s",
-    S: "t",
-    U: "v",
-    V: "x",
-    W: "y",
-    X: "y",
-    Y: "z",
-    Z: "a"
-
-};
-
-
-/*
-==================================================
-REVERSE SUPPORTER
-==================================================
-Dipakai saat decoding.
-*/
-
-const REVERSE_SUPPORTERS = {};
-
-for (const letter in SUPPORTERS) {
-
-    const supporter = SUPPORTERS[letter];
-
-    REVERSE_SUPPORTERS[
-        ID[letter] + supporter
-    ] = letter;
-
-}
-
-
-/*
-==================================================
-GENERATOR
-==================================================
-Contoh:
-
-IMAGE
-
-I = 0j
-M = 0n
-A = 0b
-G = 0h
-E = 0f
-
-hasil:
-
-0j.0n.0b.0h.0f
-
-Jika ada extension:
-
-image.png
-
-menjadi:
-
-0j.0n.0b.0h.0f<.png>
-==================================================
-*/
-
-function encodeCcois(input) {
-
-    if (!input) {
-        return "";
-    }
-
-
-    let result = "";
-
-
-    /*
-    Pisahkan extension.
-    */
-
-    const lastDot = input.lastIndexOf(".");
-
-
-    let name = input;
-    let extension = "";
-
-
-    if (
-        lastDot > 0 &&
-        lastDot < input.length - 1
-    ) {
-
-        name = input.substring(0, lastDot);
-        extension = input.substring(lastDot + 1);
-
-    }
-
-
-    /*
-    Encode nama.
-    */
-
-    const parts = [];
-
-
-    for (const char of name) {
-
-        const upper = char.toUpperCase();
-
-
-        if (
-            ID[upper] !== undefined &&
-            SUPPORTERS[upper] !== undefined
-        ) {
-
-            parts.push(
-                ID[upper] +
-                SUPPORTERS[upper]
-            );
-
-        } else {
-
-            /*
-            Karakter selain A-Z
-            disimpan apa adanya.
-            */
-
-            parts.push(char);
-
-        }
-
-    }
-
-
-    result = parts.join(".");
-
-
-    /*
-    Extension.
-    */
-
-    if (extension) {
-
-        result += "<." + extension + ">";
-
-    }
-
-
-    return result;
-
-}
-
-
-/*
-==================================================
-DECODER
-==================================================
-==================================================
-*/
-
-function decodeCcois(code) {
-
-    if (!code) {
-        return "";
-    }
-
-
-    let extension = "";
-
-
-    /*
-    Ambil extension:
-
-    <.png>
-    */
-
-    const extensionMatch =
-        code.match(/<\.([^>]+)>$/);
-
-
-    if (extensionMatch) {
-
-        extension =
-            extensionMatch[1];
-
-        code =
-            code.substring(
-                0,
-                extensionMatch.index
-            );
-
-    }
-
-
-    const tokens = code
-        .split(".")
-        .filter(token => token !== "");
-
-
-    let result = "";
-
-
-    for (const token of tokens) {
-
-        /*
-        Format normal:
-        0j
-        0n
-        1o
-        */
-
-        if (token.length === 2) {
-
-            const letter =
-                REVERSE_SUPPORTERS[token];
-
-            if (letter) {
-
-                result += letter.toLowerCase();
-
-                continue;
-
-            }
-
-        }
-
-
-        /*
-        Karakter biasa.
-        */
-
-        result += token;
-
-    }
-
-
-    if (extension) {
-
-        result += "." + extension;
-
-    }
-
-
-    return result;
-
-}
-
-
-/*
-==================================================
-GENERATOR UI
-==================================================
-*/
-
-const inputText =
-    document.getElementById("inputText");
-
-const generatedCode =
-    document.getElementById("generatedCode");
-
-
-document
-    .getElementById("generateButton")
-    .addEventListener(
-        "click",
-        function() {
-
-            const input =
-                inputText.value.trim();
-
-            if (!input) {
-
-                generatedCode.textContent = "-";
-
-                return;
-
-            }
-
-
-            generatedCode.textContent =
-                encodeCcois(input);
-
-        }
-    );
-
-
-/*
-==================================================
-COPY
-==================================================
-*/
-
-document
-    .getElementById("copyButton")
-    .addEventListener(
-        "click",
-        async function() {
-
-            const code =
-                generatedCode.textContent;
-
-            if (!code || code === "-") {
-                return;
-            }
-
-            try {
-
-                await navigator.clipboard.writeText(code);
-
-            } catch (error) {
-
-                /*
-                Fallback.
-                */
-
-                const textarea =
-                    document.createElement("textarea");
-
-                textarea.value = code;
-
-                document.body.appendChild(textarea);
-
-                textarea.select();
-
-                document.execCommand("copy");
-
-                textarea.remove();
-
-            }
-
-        }
-    );
-
-
-/*
-==================================================
-CLEAR
-==================================================
-*/
-
-document
-    .getElementById("clearButton")
-    .addEventListener(
-        "click",
-        function() {
-
-            inputText.value = "";
-
-            generatedCode.textContent = "-";
-
-        }
-    );
-
-
-/*
-==================================================
-TABS
-==================================================
-*/
-
-const tabs =
-    document.querySelectorAll(".tab");
-
-const pages =
-    document.querySelectorAll(".page");
-
-
-tabs.forEach(function(tab) {
-
-    tab.addEventListener(
-        "click",
-        function() {
-
-            const target =
-                tab.dataset.page;
-
-
-            tabs.forEach(function(item) {
-
-                item.classList.remove("active");
-
-            });
-
-
-            pages.forEach(function(page) {
-
-                page.classList.remove("active");
-
-            });
-
-
-            tab.classList.add("active");
-
-            document
-                .getElementById(target)
-                .classList.add("active");
-
-
-            /*
-            Kamera hanya aktif ketika
-            scanner dibuka.
-            */
-
-            if (target !== "scanner") {
-
-                stopScanner();
-
-            }
-
-        }
-    );
-
-});
-
-
-/*
-==================================================
-SCANNER
-==================================================
-*/
-
-let html5QrCode = null;
-
-let scannerRunning = false;
-
-let lastScan = "";
-
-let scanLocked = false;
-
-
-const scanStatus =
-    document.getElementById("scanStatus");
-
-const scannedCode =
-    document.getElementById("scannedCode");
-
-const decodedText =
-    document.getElementById("decodedText");
-
-
-async function startScanner() {
-
-    if (scannerRunning) {
-        return;
-    }
-
-
-    if (
-        typeof Html5Qrcode ===
-        "undefined"
-    ) {
-
-        scanStatus.textContent =
-            "Library scanner tidak tersedia.";
-
-        scanStatus.className =
-            "status error";
-
-        return;
-
-    }
-
-
-    html5QrCode =
-        new Html5Qrcode("reader");
-
-
-    try {
-
-        await html5QrCode.start(
-
-            {
-                facingMode: "environment"
-            },
-
-            {
-
-                fps: 10,
-
-                qrbox: {
-                    width: 280,
-                    height: 180
-                },
-
-                formatsToSupport: [
-
-                    Html5QrcodeSupportedFormats.QR_CODE,
-
-                    Html5QrcodeSupportedFormats.CODE_128,
-
-                    Html5QrcodeSupportedFormats.CODE_39,
-
-                    Html5QrcodeSupportedFormats.EAN_13,
-
-                    Html5QrcodeSupportedFormats.EAN_8
-
-                ]
-
-            },
-
-            onScanSuccess,
-
-            onScanFailure
-
+function openPage(page){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(
+            element =>
+                element.classList.remove("active")
         );
 
 
-        scannerRunning = true;
-
-        scanStatus.textContent =
-            "Scanner aktif.";
-
-        scanStatus.className =
-            "status";
+    document
+        .getElementById(
+            "page-" + page
+        )
+        .classList.add("active");
 
 
-    } catch (error) {
+    document
+        .querySelectorAll(".nav-button")
+        .forEach(button=>{
 
-        scannerRunning = false;
+            button.classList.toggle(
+                "active",
+                button.dataset.page === page
+            );
 
-        scanStatus.textContent =
-            "Kamera tidak dapat digunakan.";
-
-        scanStatus.className =
-            "status error";
-
-        console.error(error);
-
-    }
-
-}
+        });
 
 
-async function stopScanner() {
-
-    if (
-        !html5QrCode ||
-        !scannerRunning
-    ) {
-
-        return;
-
-    }
+    document
+        .getElementById("topTitle")
+        .textContent =
+            pageData[page].title;
 
 
-    try {
-
-        await html5QrCode.stop();
-
-        html5QrCode.clear();
-
-    } catch (error) {
-
-        console.error(error);
-
-    }
+    document
+        .getElementById("topSubtitle")
+        .textContent =
+            pageData[page].subtitle;
 
 
-    scannerRunning = false;
-
-    scanStatus.textContent =
-        "Kamera dihentikan.";
+    closeSidebar();
 
 }
 
-
-/*
-==================================================
-SCAN SUCCESS
-==================================================
-*/
-
-function onScanSuccess(decoded) {
-
-    if (scanLocked) {
-        return;
-    }
-
-
-    decoded = decoded.trim();
-
-
-    if (!decoded) {
-        return;
-    }
-
-
-    /*
-    Hindari hasil scan yang sama
-    berulang kali.
-    */
-
-    if (decoded === lastScan) {
-        return;
-    }
-
-
-    scanLocked = true;
-
-    lastScan = decoded;
-
-
-    /*
-    Tampilkan kode.
-    */
-
-    scannedCode.textContent =
-        decoded;
-
-
-    /*
-    Decode C-COIS.
-    */
-
-    const result =
-        decodeCcois(decoded);
-
-
-    decodedText.textContent =
-        result;
-
-
-    scanStatus.textContent =
-        "Kode berhasil dibaca.";
-
-    scanStatus.className =
-        "status success";
-
-
-    /*
-    Beri waktu agar kamera
-    tidak membaca kode yang sama
-    terus-menerus.
-    */
-
-    setTimeout(function() {
-
-        scanLocked = false;
-
-    }, 1200);
-
-}
-
-
-function onScanFailure() {
-
-    /*
-    Sengaja kosong.
-    Scanner terus mencoba frame berikutnya.
-    */
-
-}
-
-
-/*
-==================================================
-BUTTON SCANNER
-==================================================
-*/
 
 document
-    .getElementById("startCamera")
+    .querySelectorAll(".nav-button")
+    .forEach(button=>{
+
+        button.addEventListener(
+            "click",
+            ()=>{
+                openPage(
+                    button.dataset.page
+                );
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   MODALS
+========================================================= */
+
+function openModal(id){
+
+    document
+        .getElementById(id)
+        .classList.add("open");
+
+}
+
+function closeModal(id){
+
+    document
+        .getElementById(id)
+        .classList.remove("open");
+
+}
+
+
+document
+    .querySelectorAll("[data-close]")
+    .forEach(button=>{
+
+        button.addEventListener(
+            "click",
+            ()=>{
+                closeModal(
+                    button.dataset.close
+                );
+            }
+        );
+
+    });
+
+
+document
+    .querySelectorAll(".modal-overlay")
+    .forEach(overlay=>{
+
+        overlay.addEventListener(
+            "click",
+            event=>{
+
+                if(event.target === overlay){
+                    overlay.classList.remove("open");
+                }
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   PRODUCT IMAGE
+========================================================= */
+
+document
+    .getElementById("productPhoto")
+    .addEventListener(
+        "change",
+        function(){
+
+            const file = this.files[0];
+
+            if(!file) return;
+
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                event=>{
+
+                    document
+                        .getElementById(
+                            "productPreview"
+                        )
+                        .src =
+                            event.target.result;
+
+                    document
+                        .getElementById(
+                            "productUpload"
+                        )
+                        .classList
+                        .add("has-preview");
+
+                };
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* =========================================================
+   SAVING IMAGE
+========================================================= */
+
+document
+    .getElementById("savingPhoto")
+    .addEventListener(
+        "change",
+        function(){
+
+            const file = this.files[0];
+
+            if(!file) return;
+
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                event=>{
+
+                    document
+                        .getElementById(
+                            "savingPreview"
+                        )
+                        .src =
+                            event.target.result;
+
+                    document
+                        .getElementById(
+                            "savingUpload"
+                        )
+                        .classList
+                        .add("has-preview");
+
+                };
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* =========================================================
+   PRODUCT RENDER
+========================================================= */
+
+function renderProducts(){
+
+    const grid =
+        document.getElementById(
+            "productGrid"
+        );
+
+
+    const nameQuery =
+        document
+            .getElementById(
+                "productSearch"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const barcodeQuery =
+        document
+            .getElementById(
+                "barcodeSearch"
+            )
+            .value
+            .trim();
+
+
+    let result = products;
+
+
+    if(barcodeQuery){
+
+        result =
+            products.filter(
+                product =>
+                    String(
+                        product.barcode || ""
+                    ) === barcodeQuery
+            );
+
+    }else if(nameQuery){
+
+        result =
+            products.filter(
+                product =>
+                    product.name
+                        .toLowerCase()
+                        .includes(nameQuery)
+            );
+
+    }
+
+
+    if(result.length === 0){
+
+        grid.innerHTML = `
+            <div
+                class="empty"
+                style="grid-column:1/-1;"
+            >
+                ${
+                    barcodeQuery
+                    ?
+                    "Barcode tidak ditemukan."
+                    :
+                    "Belum ada produk."
+                }
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        result
+            .map(product=>{
+
+                const photo =
+                    product.image
+                    ?
+                    `
+                    <img
+                        class="product-photo"
+                        src="${product.image}"
+                        alt=""
+                    >
+                    `
+                    :
+                    `
+                    <div class="product-empty-photo">
+                        Tidak ada foto
+                    </div>
+                    `;
+
+
+                return `
+                    <div
+                        class="product-card"
+                        data-id="${product.id}"
+                    >
+
+                        ${photo}
+
+                        <div class="product-info">
+
+                            <div class="product-name">
+                                ${escapeHTML(
+                                    product.name
+                                )}
+                            </div>
+
+                            <div class="product-price">
+                                ${money(
+                                    product.price
+                                )}
+                            </div>
+
+                            <div class="product-meta">
+                                Stok ${product.stock}
+                                ${
+                                    product.barcode
+                                    ?
+                                    " · " +
+                                    escapeHTML(
+                                        product.barcode
+                                    )
+                                    :
+                                    ""
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            })
+            .join("");
+
+
+    grid
+        .querySelectorAll(".product-card")
+        .forEach(card=>{
+
+            card.addEventListener(
+                "click",
+                ()=>{
+                    addToCart(
+                        card.dataset.id
+                    );
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   BARCODE SEARCH
+========================================================= */
+
+function searchBarcode(){
+
+    const code =
+        document
+            .getElementById(
+                "barcodeSearch"
+            )
+            .value
+            .trim();
+
+
+    if(!code){
+
+        renderProducts();
+        return;
+
+    }
+
+
+    const product =
+        products.find(
+            item =>
+                String(
+                    item.barcode || ""
+                ) === code
+        );
+
+
+    if(product){
+
+        addToCart(product.id);
+
+        /*
+          Setelah scanner barcode mengirim
+          Enter, input dikosongkan sehingga
+          barcode berikutnya bisa langsung scan.
+        */
+
+        document
+            .getElementById(
+                "barcodeSearch"
+            )
+            .value = "";
+
+        renderProducts();
+
+    }else{
+
+        renderProducts();
+
+    }
+
+}
+
+
+document
+    .getElementById(
+        "barcodeSearchButton"
+    )
     .addEventListener(
         "click",
-        startScanner
+        searchBarcode
     );
 
 
 document
-    .getElementById("stopCamera")
+    .getElementById(
+        "barcodeSearch"
+    )
     .addEventListener(
-        "click",
-        stopScanner
+        "keydown",
+        event=>{
+
+            if(event.key === "Enter"){
+
+                event.preventDefault();
+
+                searchBarcode();
+
+            }
+
+        }
     );
 
+
+document
+    .getElementById(
+        "barcodeSearch"
+    )
+    .addEventListener(
+        "input",
+        ()=>{
+            renderProducts();
+        }
+    );
+
+
+document
+    .getElementById(
+        "productSearch"
+    )
+    .addEventListener(
+        "input",
+        ()=>{
+            document
+                .getElementById(
+                    "barcodeSearch"
+                )
+                .value = "";
+
+            renderProducts();
+        }
+    );
+
+
+/* =========================================================
+   CART
+========================================================= */
+
+function addToCart(id){
+
+    const product =
+        products.find(
+            item => item.id === id
+        );
+
+
+    if(!product) return;
+
+
+    if(Number(product.stock) <= 0){
+
+        alert("Stok produk habis.");
+
+        return;
+
+    }
+
+
+    const existing =
+        cart.find(
+            item => item.id === id
+        );
+
+
+    if(existing){
+
+        if(
+            existing.qty >=
+            Number(product.stock)
+        ){
+
+            alert(
+                "Jumlah sudah mencapai stok."
+            );
+
+            return;
+
+        }
+
+        existing.qty++;
+
+    }else{
+
+        cart.push({
+
+            id:product.id,
+
+            name:product.name,
+
+            price:Number(
+                product.price
+            ),
+
+            qty:1
+
+        });
+
+    }
+
+
+    renderCart();
+
+}
+
+
+function changeQuantity(
+    id,
+    amount
+){
+
+    const item =
+        cart.find(
+            item => item.id === id
+        );
+
+
+    if(!item) return;
+
+
+    const product =
+        products.find(
+            item => item.id === id
+        );
+
+
+    item.qty += amount;
+
+
+    if(item.qty <= 0){
+
+        cart =
+            cart.filter(
+                item => item.id !== id
+            );
+
+    }
+
+
+    if(
+        product &&
+        item.qty > product.stock
+    ){
+
+        item.qty =
+            product.stock;
+
+    }
+
+
+    renderCart();
+
+}
+
+
+function renderCart(){
+
+    const list =
+        document.getElementById(
+            "cartList"
+        );
+
+
+    if(cart.length === 0){
+
+        list.innerHTML = `
+            <div class="empty">
+                Belum ada produk dalam transaksi.
+            </div>
+        `;
+
+    }else{
+
+        list.innerHTML =
+            cart
+                .map(item=>{
+
+                    return `
+                        <div class="cart-item">
+
+                            <div>
+
+                                <div class="cart-name">
+                                    ${escapeHTML(
+                                        item.name
+                                    )}
+                                </div>
+
+                                <div class="cart-price">
+                                    ${money(
+                                        item.price
+                                    )}
+                                    ×
+                                    ${item.qty}
+                                </div>
+
+                            </div>
+
+
+                            <div class="quantity">
+
+                                <button
+                                    data-minus="${item.id}"
+                                >
+                                    −
+                                </button>
+
+                                <span>
+                                    ${item.qty}
+                                </span>
+
+                                <button
+                                    data-plus="${item.id}"
+                                >
+                                    +
+                                </button>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                })
+                .join("");
+
+
+        list
+            .querySelectorAll(
+                "[data-minus]"
+            )
+            .forEach(button=>{
+
+                button.addEventListener(
+                    "click",
+                    ()=>{
+                        changeQuantity(
+                            button.dataset.minus,
+                            -1
+                        );
+                    }
+                );
+
+            });
+
+
+        list
+            .querySelectorAll(
+                "[data-plus]"
+            )
+            .forEach(button=>{
+
+                button.addEventListener(
+                    "click",
+                    ()=>{
+                        changeQuantity(
+                            button.dataset.plus,
+                            1
+                        );
+                    }
+                );
+
+            });
+
+    }
+
+
+    const count =
+        cart.reduce(
+            (total,item)=>
+                total + item.qty,
+            0
+        );
+
+
+    document
+        .getElementById(
+            "cartCount"
+        )
+        .textContent =
+            count + " item";
+
+
+    calculateTotal();
+
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+function calculateTotal(){
+
+    const subtotal =
+        cart.reduce(
+            (sum,item)=>
+                sum +
+                item.price *
+                item.qty,
+            0
+        );
+
+
+    const currentTax =
+        Number(
+            document
+                .getElementById(
+                    "cartTax"
+                )
+                .value
+        ) || 0;
+
+
+    const taxValue =
+        subtotal *
+        currentTax /
+        100;
+
+
+    const total =
+        subtotal +
+        taxValue;
+
+
+    document
+        .getElementById(
+            "subtotal"
+        )
+        .textContent =
+            money(subtotal);
+
+
+    document
+        .getElementById(
+            "taxValue"
+        )
+        .textContent =
+            money(taxValue);
+
+
+    document
+        .getElementById(
+            "total"
+        )
+        .textContent =
+            money(total);
+
+
+    return {
+        subtotal,
+        taxValue,
+        total,
+        tax:currentTax
+    };
+
+}
+
+
+document
+    .getElementById(
+        "cartTax"
+    )
+    .addEventListener(
+        "input",
+        calculateTotal
+    );
+
+
+/* =========================================================
+   CLEAR CART
+========================================================= */
+
+document
+    .getElementById(
+        "clearCart"
+    )
+    .addEventListener(
+        "click",
+        ()=>{
+
+            cart = [];
+
+            renderCart();
+
+        }
+    );
+
+
+/* =========================================================
+   CHECKOUT
+========================================================= */
+
+document
+    .getElementById(
+        "checkoutButton"
+    )
+    .addEventListener(
+        "click",
+        ()=>{
+
+            if(cart.length === 0){
+
+                alert(
+                    "Belum ada produk."
+                );
+
+                return;
+
+            }
+
+
+            const result =
+                calculateTotal();
+
+
+            cart.forEach(item=>{
+
+                const product =
+                    products.find(
+                        p =>
+                            p.id === item.id
+                    );
+
+
+                if(product){
+
+                    product.stock -=
+                        item.qty;
+
+                }
+
+            });
+
+
+            histories.unshift({
+
+                id:String(
+                    Date.now()
+                ),
+
+                date:
+                    new Date()
+                    .toISOString(),
+
+                items:
+                    cart.map(item=>({
+
+                        name:item.name,
+
+                        qty:item.qty,
+
+                        price:item.price
+
+                    })),
+
+                subtotal:
+                    result.subtotal,
+
+                tax:
+                    result.taxValue,
+
+                total:
+                    result.total
+
+            });
+
+
+            saveProducts();
+            saveHistories();
+
+
+            cart = [];
+
+
+            renderProducts();
+            renderCart();
+            renderHistory();
+
+
+            alert(
+                "Transaksi berhasil disimpan."
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   PRODUCT MODAL
+========================================================= */
+
+document
+    .getElementById(
+        "addProductButton"
+    )
+    .addEventListener(
+        "click",
+        ()=>{
+
+            document
+                .getElementById(
+                    "productForm"
+                )
+                .reset();
+
+
+            document
+                .getElementById(
+                    "productUpload"
+                )
+                .classList
+                .remove(
+                    "has-preview"
+                );
+
+
+            document
+                .getElementById(
+                    "productPreview"
+                )
+                .src = "";
+
+
+            openModal(
+                "productModal"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "productForm"
+    )
+    .addEventListener(
+        "submit",
+        event=>{
+
+            event.preventDefault();
+
+
+            const image =
+                document
+                    .getElementById(
+                        "productPreview"
+                    )
+                    .src;
+
+
+            products.push({
+
+                id:String(
+                    Date.now()
+                ),
+
+                name:
+                    document
+                        .getElementById(
+                            "productName"
+                        )
+                        .value
+                        .trim(),
+
+                price:
+                    Number(
+                        document
+                            .getElementById(
+                                "productPrice"
+                            )
+                            .value
+                    ),
+
+                stock:
+                    Number(
+                        document
+                            .getElementById(
+                                "productStock"
+                            )
+                            .value
+                    ),
+
+                barcode:
+                    document
+                        .getElementById(
+                            "productBarcode"
+                        )
+                        .value
+                        .trim(),
+
+                image:
+                    image.startsWith(
+                        "data:image"
+                    )
+                    ? image
+                    : ""
+
+            });
+
+
+            saveProducts();
+
+            renderProducts();
+
+            closeModal(
+                "productModal"
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   SAVINGS
+========================================================= */
+
+function renderSavings(){
+
+    const grid =
+        document.getElementById(
+            "savingGrid"
+        );
+
+
+    if(savings.length === 0){
+
+        grid.innerHTML = `
+            <div
+                class="empty"
+                style="grid-column:1/-1;"
+            >
+                Belum ada tabungan.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        savings
+            .map(saving=>{
+
+                const target =
+                    Number(
+                        saving.target
+                    );
+
+
+                const current =
+                    Number(
+                        saving.current
+                    );
+
+
+                const percent =
+                    Math.min(
+                        100,
+                        current /
+                        target *
+                        100
+                    );
+
+
+                const done =
+                    current >= target;
+
+
+                const image =
+                    saving.image
+                    ?
+                    `
+                    <img
+                        class="saving-photo"
+                        src="${saving.image}"
+                        alt=""
+                    >
+                    `
+                    :
+                    `
+                    <div class="saving-no-photo">
+                        Tidak ada foto
+                    </div>
+                    `;
+
+
+                return `
+                    <div
+                        class="saving-card"
+                        data-saving="${saving.id}"
+                    >
+
+                        ${image}
+
+                        <div class="saving-body">
+
+                            <div class="saving-title">
+                                ${escapeHTML(
+                                    saving.title
+                                )}
+                            </div>
+
+                            <div class="saving-money">
+
+                                <span class="saving-current">
+                                    ${money(current)}
+                                </span>
+
+                                <span class="saving-target">
+                                    ${money(target)}
+                                </span>
+
+                            </div>
+
+                            <div class="progress">
+
+                                <div
+                                    class="progress-bar"
+                                    style="
+                                        width:${percent}%;
+                                        background:${done
+                                            ? "var(--green)"
+                                            : "var(--purple)"
+                                        };
+                                    "
+                                ></div>
+
+                            </div>
+
+                            <div class="saving-footer">
+
+                                <span>
+                                    ${Math.round(
+                                        percent
+                                    )}%
+                                </span>
+
+                                ${
+                                    done
+                                    ?
+                                    `
+                                    <span class="achieved">
+                                        Tercapai
+                                    </span>
+                                    `
+                                    :
+                                    `
+                                    <span>
+                                        Sisa
+                                        ${money(
+                                            target -
+                                            current
+                                        )}
+                                    </span>
+                                    `
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            })
+            .join("");
+
+
+    grid
+        .querySelectorAll(
+            "[data-saving]"
+        )
+        .forEach(card=>{
+
+            card.addEventListener(
+                "click",
+                ()=>{
+                    openSaving(
+                        card.dataset.saving
+                    );
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   ADD SAVING
+========================================================= */
+
+document
+    .getElementById(
+        "addSavingButton"
+    )
+    .addEventListener(
+        "click",
+        ()=>{
+
+            document
+                .getElementById(
+                    "savingForm"
+                )
+                .reset();
+
+
+            document
+                .getElementById(
+                    "savingUpload"
+                )
+                .classList
+                .remove(
+                    "has-preview"
+                );
+
+
+            document
+                .getElementById(
+                    "savingPreview"
+                )
+                .src = "";
+
+
+            openModal(
+                "savingModal"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "savingForm"
+    )
+    .addEventListener(
+        "submit",
+        event=>{
+
+            event.preventDefault();
+
+
+            const image =
+                document
+                    .getElementById(
+                        "savingPreview"
+                    )
+                    .src;
+
+
+            savings.push({
+
+                id:String(
+                    Date.now()
+                ),
+
+                title:
+                    document
+                        .getElementById(
+                            "savingTitle"
+                        )
+                        .value
+                        .trim(),
+
+                target:
+                    Number(
+                        document
+                            .getElementById(
+                                "savingTarget"
+                            )
+                            .value
+                    ),
+
+                current:0,
+
+                image:
+                    image.startsWith(
+                        "data:image"
+                    )
+                    ? image
+                    : "",
+
+                history:[]
+
+            });
+
+
+            saveSavings();
+
+            renderSavings();
+
+            closeModal(
+                "savingModal"
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   SAVING DETAIL
+========================================================= */
+
+function openSaving(id){
+
+    selectedSaving = id;
+
+    renderSavingDetail();
+
+    openModal(
+        "savingDetailModal"
+    );
+
+}
+
+
+function renderSavingDetail(){
+
+    const saving =
+        savings.find(
+            item =>
+                item.id ===
+                selectedSaving
+        );
+
+
+    if(!saving) return;
+
+
+    const target =
+        Number(
+            saving.target
+        );
+
+
+    const current =
+        Number(
+            saving.current
+        );
+
+
+    const percent =
+        Math.min(
+            100,
+            current /
+            target *
+            100
+        );
+
+
+    const done =
+        current >= target;
+
+
+    const image =
+        saving.image
+        ?
+        `
+        <img
+            src="${saving.image}"
+            style="
+                width:100%;
+                height:210px;
+                object-fit:cover;
+                border-radius:13px;
+                background:#22272d;
+            "
+            alt=""
+        >
+        `
+        :
+        `
+        <div
+            style="
+                height:210px;
+                display:grid;
+                place-items:center;
+                background:#20252b;
+                border-radius:13px;
+                color:#68707a;
+                font-size:11px;
+            "
+        >
+            Tidak ada foto
+        </div>
+        `;
+
+
+    document
+        .getElementById(
+            "savingDetail"
+        )
+        .innerHTML = `
+
+            ${image}
+
+            <div
+                style="
+                    font-size:20px;
+                    font-weight:750;
+                    margin-top:15px;
+                "
+            >
+                ${escapeHTML(
+                    saving.title
+                )}
+            </div>
+
+            <div
+                style="
+                    color:#9299a3;
+                    font-size:12px;
+                    margin-top:6px;
+                "
+            >
+                ${money(current)}
+                dari
+                ${money(target)}
+            </div>
+
+            <div class="progress">
+                <div
+                    class="progress-bar"
+                    style="
+                        width:${percent}%;
+                        background:${done
+                            ? "var(--green)"
+                            : "var(--purple)"
+                        };
+                    "
+                ></div>
+            </div>
+
+            <div
+                style="
+                    color:#747c86;
+                    font-size:10px;
+                    margin-top:6px;
+                "
+            >
+                ${Math.round(percent)}%
+            </div>
+
+        `;
+
+
+    document
+        .getElementById(
+            "achievement"
+        )
+        .classList
+        .toggle(
+            "show",
+            done
+        );
+
+
+    document
+        .getElementById(
+            "todayAmount"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "saveToday"
+        )
+        .style
+        .display =
+            done
+            ? "none"
+            : "block";
+
+
+    renderSavingHistory(
+        saving
+    );
+
+}
+
+
+function renderSavingHistory(
+    saving
+){
+
+    const list =
+        document.getElementById(
+            "savingHistory"
+        );
+
+
+    if(
+        !saving.history ||
+        saving.history.length === 0
+    ){
+
+        list.innerHTML = `
+            <div class="empty">
+                Belum ada setoran.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+        [...saving.history]
+            .reverse()
+            .map(item=>{
+
+                return `
+                    <div
+                        class="history-card"
+                        style="
+                            padding:10px;
+                        "
+                    >
+
+                        <div class="history-top">
+
+                            <span class="history-date">
+                                ${escapeHTML(
+                                    item.date
+                                )}
+                            </span>
+
+                            <strong>
+                                +${money(
+                                    item.amount
+                                )}
+                            </strong>
+
+                        </div>
+
+                    </div>
+                `;
+
+            })
+            .join("");
+
+}
+
+
+/* =========================================================
+   SAVE TODAY
+========================================================= */
+
+document
+    .getElementById(
+        "saveToday"
+    )
+    .addEventListener(
+        "click",
+        ()=>{
+
+            const saving =
+                savings.find(
+                    item =>
+                        item.id ===
+                        selectedSaving
+                );
+
+
+            if(!saving) return;
+
+
+            const amount =
+                Number(
+                    document
+                        .getElementById(
+                            "todayAmount"
+                        )
+                        .value
+                );
+
+
+            if(
+                !amount ||
+                amount <= 0
+            ){
+
+                alert(
+                    "Masukkan nominal tabungan."
+                );
+
+                return;
+
+            }
+
+
+            const remaining =
+                Number(
+                    saving.target
+                ) -
+                Number(
+                    saving.current
+                );
+
+
+            const actual =
+                Math.min(
+                    amount,
+                    remaining
+                );
+
+
+            saving.current +=
+                actual;
+
+
+            if(!saving.history){
+                saving.history = [];
+            }
+
+
+            saving.history.push({
+
+                date:dateNow(),
+
+                amount:actual
+
+            });
+
+
+            saveSavings();
+
+            renderSavings();
+
+            renderSavingDetail();
+
+        }
+    );
+
+
+/* =========================================================
+   DELETE SAVING
+========================================================= */
+
+document
+    .getElementById(
+        "deleteSaving"
+    )
+    .addEventListener(
+        "click",
+        ()=>{
+
+            if(!selectedSaving)
+                return;
+
+
+            if(
+                !confirm(
+                    "Hapus tabungan ini?"
+                )
+            )
+                return;
+
+
+            savings =
+                savings.filter(
+                    item =>
+                        item.id !==
+                        selectedSaving
+                );
+
+
+            saveSavings();
+
+            closeModal(
+                "savingDetailModal"
+            );
+
+            renderSavings();
+
+        }
+    );
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function renderHistory(){
+
+    const list =
+        document.getElementById(
+            "historyList"
+        );
+
+
+    if(histories.length === 0){
+
+        list.innerHTML = `
+            <div class="empty">
+                Belum ada transaksi.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+        histories
+            .map(transaction=>{
+
+                const items =
+                    transaction.items
+                        .map(
+                            item =>
+                                `${escapeHTML(
+                                    item.name
+                                )} × ${item.qty}`
+                        )
+                        .join(" · ");
+
+
+                return `
+                    <div class="history-card">
+
+                        <div class="history-top">
+
+                            <div>
+
+                                <div class="history-total">
+                                    ${money(
+                                        transaction.total
+                                    )}
+                                </div>
+
+                                <div class="history-date">
+                                    ${new Date(
+                                        transaction.date
+                                    ).toLocaleString(
+                                        "id-ID"
+                                    )}
+                                </div>
+
+                            </div>
+
+                            <div
+                                style="
+                                    color:#737b85;
+                                    font-size:10px;
+                                "
+                            >
+                                Pajak
+                                ${money(
+                                    transaction.tax
+                                )}
+                            </div>
+
+                        </div>
+
+                        <div class="history-items">
+                            ${items}
+                        </div>
+
+                    </div>
+                `;
+
+            })
+            .join("");
+
+}
+
+
+document
+    .getElementById(
+        "clearHistory"
+    )
+    .addEventListener(
+        "click",
+        ()=>{
+
+            if(
+                histories.length === 0
+            )
+                return;
+
+
+            if(
+                !confirm(
+                    "Hapus seluruh riwayat?"
+                )
+            )
+                return;
+
+
+            histories = [];
+
+            saveHistories();
+
+            renderHistory();
+
+        }
+    );
+
+
+/* =========================================================
+   TAX
+========================================================= */
+
+function renderTax(){
+
+    document
+        .getElementById(
+            "globalTax"
+        )
+        .value = tax;
+
+
+    document
+        .getElementById(
+            "taxStatus"
+        )
+        .textContent =
+            tax + "%";
+
+
+    document
+        .getElementById(
+            "cartTax"
+        )
+        .value =
+            tax;
+
+}
+
+
+document
+    .getElementById(
+        "globalTax"
+    )
+    .addEventListener(
+        "input",
+        event=>{
+
+            let value =
+                Number(
+                    event.target.value
+                ) || 0;
+
+
+            value =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        value
+                    )
+                );
+
+
+            tax = value;
+
+            saveTax();
+
+            renderTax();
+
+        }
+    );
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+renderProducts();
+
+renderCart();
+
+renderSavings();
+
+renderHistory();
+
+renderTax();
 
 </script>
 
